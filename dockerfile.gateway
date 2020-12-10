@@ -1,0 +1,21 @@
+FROM node:13
+
+WORKDIR /usr/src/app
+
+RUN npm install typescript -g
+
+COPY dwarf-common/src dwarf-common/src
+COPY dwarf-common/package.json dwarf-common/package.json
+COPY dwarf-common/tsconfig.json dwarf-common/tsconfig.json
+RUN npm install --prefix dwarf-common
+RUN npx tsc --project dwarf-common
+
+COPY dwarf-gateway/src dwarf-gateway/src
+COPY dwarf-gateway/package.json dwarf-gateway/package.json
+COPY dwarf-gateway/tsconfig.json dwarf-gateway/tsconfig.json
+RUN npm install --prefix dwarf-gateway
+RUN npx tsc --project dwarf-gateway
+
+EXPOSE 8080
+
+CMD [ "node", "./dwarf-gateway/dist/main.js" ]

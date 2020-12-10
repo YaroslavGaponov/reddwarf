@@ -1,0 +1,19 @@
+{
+  "name": "dwarf-common",
+  "version": "0.0.1",
+  "description": "dwarf common",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^13.1.8",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  },
+  "author": "Yaroslav Gaponov",
+  "license": "ISC"
+}

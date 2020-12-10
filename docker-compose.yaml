@@ -1,0 +1,34 @@
+services:
+
+  dwarf-gateway:
+    build:
+      context: .
+      dockerfile: ./dockerfile.gateway
+    expose: 
+      - 8080
+    ports:
+      - "8080:8080"
+
+  dwarf-demo-service:
+    build: 
+      context: .
+      dockerfile: ./dockerfile.demoservice
+    links:
+      - dwarf-gateway
+    environment: 
+      - GATEWAY_HOST=dwarf-gateway
+      - GATEWAY_PORT=8080
+
+  dwarf-monitor:
+    build: 
+      context: .
+      dockerfile: ./dockerfile.monitor
+    links:
+      - dwarf-gateway
+    environment: 
+      - GATEWAY_HOST=dwarf-gateway
+      - GATEWAY_PORT=8080
+    expose: 
+      - 8081
+    ports:
+      - "8081:8081"

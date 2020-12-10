@@ -1,0 +1,13 @@
+**/node_modules/
+npm-debug.log
+**/dist
+coverage/**
+junit.xml
+.idea/
+.DS_Store
+sonar-report.xml
+.scannerwork/**
+.vscode/
+public.cert
+docker-compose.yaml
+dockerfile

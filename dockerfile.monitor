@@ -1,0 +1,30 @@
+FROM node:13
+
+WORKDIR /usr/src/app
+
+RUN npm install typescript -g
+
+COPY dwarf-common/src dwarf-common/src
+COPY dwarf-common/package.json dwarf-common/package.json
+COPY dwarf-common/tsconfig.json dwarf-common/tsconfig.json
+RUN npm install --prefix dwarf-common
+RUN npx tsc --project dwarf-common
+
+COPY dwarf-sdk/src dwarf-sdk/src
+COPY dwarf-sdk/package.json dwarf-sdk/package.json
+COPY dwarf-sdk/tsconfig.json dwarf-sdk/tsconfig.json
+RUN npm install --prefix dwarf-sdk
+RUN npx tsc --project dwarf-sdk
+
+
+COPY dwarf-monitor/ui dwarf-monitor/ui
+RUN npm install --prefix dwarf-monitor/ui
+RUN npm run build  --prefix dwarf-monitor/ui
+
+COPY dwarf-monitor/server dwarf-monitor/server
+RUN npm install --prefix dwarf-monitor/server
+RUN npx tsc --project dwarf-monitor/server
+
+EXPOSE 8081
+
+CMD [ "node", "./dwarf-monitor/server/dist/main.js" ]
