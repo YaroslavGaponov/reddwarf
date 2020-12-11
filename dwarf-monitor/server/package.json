@@ -16,7 +16,8 @@
   },
   "dependencies": {
     "dwarf-sdk": "../../dwarf-sdk",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "ws": "^7.4.1"
   },
   "author": "Yaroslav Gaponov",
   "license": "ISC"

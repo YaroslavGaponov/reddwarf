@@ -1,26 +1,15 @@
 <script lang="ts">
 	import Service from "./Service.svelte";
 
-	let registry = getRegistry();
+	let registry = {};
 
-	async function getRegistry() {
-		const res = await fetch(`/registry`);
-		const json = await res.json();
-
-		if (res.ok) {
-			return json;
-		} else {
-			throw new Error("Error");
-		}
-	}
-
-	function handleClick() {
-		registry = getRegistry();
-	}
+	const ws = new WebSocket(`ws://${location.host}/ws`);
+	ws.onmessage = function (m) {
+		registry = JSON.parse(m.data);
+	};
 </script>
 
 <div>
-	<div><button on:click={handleClick}> fetch registry </button></div>
 	<div>
 		{#await registry}
 			<p>...waiting</p>
