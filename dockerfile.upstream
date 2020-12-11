@@ -16,10 +16,10 @@ COPY dwarf-sdk/tsconfig.json dwarf-sdk/tsconfig.json
 RUN npm install --prefix dwarf-sdk
 RUN npx tsc --project dwarf-sdk
 
-COPY dwarf-demo-service/src dwarf-demo-service/src
-COPY dwarf-demo-service/package.json dwarf-demo-service/package.json
-COPY dwarf-demo-service/tsconfig.json dwarf-demo-service/tsconfig.json
-RUN npm install --prefix dwarf-demo-service
-RUN npx tsc --project dwarf-demo-service
+COPY dwarf-upstream/src dwarf-upstream/src
+COPY dwarf-upstream/package.json dwarf-upstream/package.json
+COPY dwarf-upstream/tsconfig.json dwarf-upstream/tsconfig.json
+RUN npm install --prefix dwarf-upstream
+RUN npx tsc --project dwarf-upstream
 
-CMD [ "node", "./dwarf-demo-service/dist/demo-service-run.js" ]
+CMD [ "node", "./dwarf-upstream/dist/main.js" ]

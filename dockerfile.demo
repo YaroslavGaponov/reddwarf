@@ -1,0 +1,25 @@
+FROM node:13
+
+WORKDIR /usr/src/app
+
+RUN npm install typescript -g
+
+COPY dwarf-common/src dwarf-common/src
+COPY dwarf-common/package.json dwarf-common/package.json
+COPY dwarf-common/tsconfig.json dwarf-common/tsconfig.json
+RUN npm install --prefix dwarf-common
+RUN npx tsc --project dwarf-common
+
+COPY dwarf-sdk/src dwarf-sdk/src
+COPY dwarf-sdk/package.json dwarf-sdk/package.json
+COPY dwarf-sdk/tsconfig.json dwarf-sdk/tsconfig.json
+RUN npm install --prefix dwarf-sdk
+RUN npx tsc --project dwarf-sdk
+
+COPY dwarf-demo/src dwarf-demo/src
+COPY dwarf-demo/package.json dwarf-demo/package.json
+COPY dwarf-demo/tsconfig.json dwarf-demo/tsconfig.json
+RUN npm install --prefix dwarf-demo
+RUN npx tsc --project dwarf-demo
+
+CMD [ "node", "./dwarf-demo/dist/demo-service-run.js" ]

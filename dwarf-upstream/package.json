@@ -1,0 +1,24 @@
+{
+  "name": "dwarf-upstream",
+  "version": "0.0.1",
+  "description": "dwarf upstream",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "upstream": "node ./dist/main"
+  },
+  "devDependencies": {
+    "@types/node": "^13.1.8",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5",
+    "@types/ws": "^7.4.0",
+    "@types/express": "^4.17.9"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dwarf-sdk": "../dwarf-sdk",
+    "express": "^4.17.1"
+  },
+  "author": "Yaroslav Gaponov",
+  "license": "ISC"
+}

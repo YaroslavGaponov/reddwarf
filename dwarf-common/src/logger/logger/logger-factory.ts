@@ -5,7 +5,7 @@ import { Logger } from "./logger";
 
 export class LoggerFactory {
     
-    @Setting("LOG_LEVEL", Level.INFO | Level.ERROR | Level.FATAL | Level.WARN)
+    @Setting("LOG_LEVEL", Level.INFO | Level.ERROR | Level.FATAL | Level.WARN | Level.TRACE | Level.DEBUG)
     static readonly level: Level;
 
     static logger: ILogger;

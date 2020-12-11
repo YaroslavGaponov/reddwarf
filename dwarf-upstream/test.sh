@@ -1,0 +1,1 @@
+curl http://localhost:8082/upstream/demo/reverse -d '{"str": "Upstream test"}'  -H "Content-Type: application/json"

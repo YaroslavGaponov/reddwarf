@@ -5,7 +5,7 @@ import { Setting } from "dwarf-common";
 
 export class AccessFactory {
 
-    @Setting("GATEWAY_HOST", "localhost")
+    @Setting("GATEWAY_HOST", "0.0.0.0")
     static host: string;
 
     @Setting("GATEWAY_PORT", 8080)
