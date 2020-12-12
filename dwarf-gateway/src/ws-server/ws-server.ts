@@ -1,8 +1,8 @@
 import { createServer } from "http";
-import WebSocket, { Server } from "ws";
+import WebSocket, { Data, Server } from "ws";
 import { Client } from "../client";
-import { INetworkServer } from "../interface";
-import {Logger, ILogger} from "dwarf-common";
+import { IClient, INetworkServer } from "../interface";
+import { Logger, ILogger } from "dwarf-common";
 
 export class WSServer implements INetworkServer {
 
@@ -10,11 +10,22 @@ export class WSServer implements INetworkServer {
     private readonly logger!: ILogger;
 
     private readonly server = createServer();
-    private readonly clients: Set<Client> = new Set();
+    private readonly clients: Set<IClient> = new Set();
 
     constructor(private readonly port: number) {
         const wss = new Server({ server: this.server });
-        wss.on("connection", (socket: WebSocket) => this.clients.add(new Client(socket)));
+        wss.on("connection", (socket: WebSocket) => {
+            const client = new Client(socket);
+            this.clients.add(client);
+            socket
+                .on("message", (data: Data) => {
+                    client.onMessage(data as Buffer);
+                })
+                .once("close", () => {
+                    this.clients.delete(client);
+                    client.close();
+                });
+        });
     }
 
     start(): Promise<void> {
