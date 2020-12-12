@@ -1,4 +1,3 @@
-
 <script lang="ts">
 	import Service from "./Service.svelte";
 
@@ -13,7 +12,7 @@
 <style>
 	p {
 		color: rgb(10, 10, 10);
-		font-family: 'Comic Sans MS', cursive;
+		font-family: "Comic Sans MS", cursive;
 		font-size: 2em;
 	}
 </style>
@@ -23,9 +22,9 @@
 		{#await registry}
 			<p>...waiting</p>
 		{:then registry}
-			<h2>Services</h2>
-			{#each Object.entries(registry) as [name, info]}
-				<Service {name} {info} />
+			<h1>Services</h1>
+			{#each Object.entries(registry) as [name, info], no}
+				<Service {no} {name} {info} />
 			{/each}
 		{/await}
 	</div>

@@ -48,13 +48,15 @@ export class DiscoveryService implements INetworkServer {
 
 
     private register(o: any) {
-        const { id, name, info } = o;
+        const { id, applicationId, name, host, info } = o;
         if (this.registry[name]) {
-            this.registry[name].access.push(id);
+            this.registry[name].access[id] = { applicationId, host};
         } else {
             this.registry[name] = {
                 info,
-                access: [id]
+                access: {
+                    [id]: { applicationId , host}
+                }
             }
         }
     }
@@ -62,13 +64,11 @@ export class DiscoveryService implements INetworkServer {
     private unregister(o: any) {
         const { id, name } = o;
         if (this.registry[name]) {
-            const idx = this.registry[name].access.indexOf(id);
-            if (idx !== -1) {
-                this.registry[name].access.splice(idx, 1);
-                if (this.registry[name].access.length === 0) {
-                    delete this.registry[name];
-                }
+            delete this.registry[name].access[id];
+            if (Object.keys(this.registry[name].access).length === 0) {
+                delete this.registry[name];
             }
+
         }
     }
 }
