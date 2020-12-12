@@ -7,7 +7,7 @@ export class Logger implements ILogger {
 
     private log(level: Level, s: string): void {
         if (this.level & level) {
-            process.stdout.write(`${new Date().toISOString()} ${Level[level]}: ${s}\n`);
+            process.stdout.write(`${new Date().toISOString()} ${Level[level]}:\t${s}\n`);
         }
     }
 

@@ -25,7 +25,7 @@ export class DemoService {
         }]
     })
     async reverse(payload: ReverseInput): Promise<ReverseOutput> {
-        this.logger.trace("reverse method is called");
+        this.logger.debug("reverse method is called");
         return { str: payload.str.split('').reverse().join('') };
     }
 

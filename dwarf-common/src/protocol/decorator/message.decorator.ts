@@ -25,6 +25,6 @@ export function getSchema(ctor: any) {
     return ctor[SCHEMA_KEY];
 }
 
-export function getMessageType(ctor: any) {
+export function getMessageType(ctor: any): MessageType {
     return ctor[SCHEMA_KEY].getType();
 }

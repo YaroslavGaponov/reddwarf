@@ -83,9 +83,9 @@ export class Access implements IAccess {
 
     async connect(): Promise<void> {
         await this._connect();
-        this.logger.info("connect to gateway is ok 👍");
+        this.logger.debug(`Client is connected to gateway 👍`);
         await this._login();
-        this.logger.info("login is ok 👌");
+        this.logger.debug("Client is logged in 👌");
     }
 
 
@@ -104,9 +104,9 @@ export class Access implements IAccess {
 
     async disconnect(): Promise<void> {
         await this._logout();
-        this.logger.info("logout is ok 🤚");
+        this.logger.debug("Client is logged out 🤚");
         await this._disconnect();
-        this.logger.info("disconnect from gateway is ok 👎 ");
+        this.logger.debug("Client is disconnected from gateway 👎 ");
     }
 
     async register(service: any): Promise<void> {

@@ -16,7 +16,7 @@ export class Client {
 
     constructor(private readonly socket: WebSocket) {
 
-        this.logger.trace(`Connecting to a new client:${this.id}  🤝`);
+        this.logger.debug(`New client:${this.id} is connected 🤝`);
 
         const reply = (data: Buffer) => {
             this.logger.trace(`Sent response client:${this.id} type:${ProtocolManager.getMessageType(data)} 👉`);

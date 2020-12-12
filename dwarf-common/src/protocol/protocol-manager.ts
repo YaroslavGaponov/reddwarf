@@ -1,10 +1,11 @@
 import { Protocol } from "./protocol";
 import { Fail, Login, Logout, Notify, Ok, Register, Subscribe, Unregister, Unsubscribe, Request, Response } from "./message";
 import { getMessageType } from "./decorator";
+import { MessageType } from "./type";
 
 export class ProtocolManager {
 
-    private readonly messages: Map<string, any> = new Map();
+    private readonly messages: any[] = [];
 
 
     constructor() {
@@ -23,26 +24,27 @@ export class ProtocolManager {
     }
 
     addMessage(ctor: any): this {
-        this.messages.set(getMessageType(ctor), new Protocol(ctor));
+        const type = getMessageType(ctor);
+        this.messages[type] = new Protocol(ctor);
         return this;
     }
 
-    static getMessageType(b: Buffer): string {
+    static getMessageType(b: Buffer): MessageType {
         return Protocol.getMessageType(b);
     }
 
     decode(b: Buffer): any {
         const type = Protocol.getMessageType(b);
-        if (this.messages.has(type)) {
-            const p = this.messages.get(type);
+        if (this.messages[type]) {
+            const p = this.messages[type];
             return p.decode(b);
         }
     }
 
     encode(o: any): Buffer | undefined {
         const type = getMessageType(o.constructor);
-        if (this.messages.has(type)) {
-            const p = this.messages.get(type);
+        if (this.messages[type]) {
+            const p = this.messages[type];
             return p.encode(o);
         }
         throw new Error("Message is not supported");

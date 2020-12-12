@@ -1,17 +1,17 @@
-import { FieldType } from "../type";
+import { FieldType, MessageType } from "../type";
 import { SchemaNode } from "./schema-node";
 
 export class Schema {
 
-    private type: string = "unknown";
+    private type: MessageType = MessageType.Unknown;
     private readonly fields: SchemaNode[] = [];
 
-    setType(type: string): this {
+    setType(type: MessageType): this {
         this.type = type;
         return this;
     }
 
-    getType(): string {
+    getType(): MessageType {
         return this.type;
     }
 
@@ -19,8 +19,8 @@ export class Schema {
         return this.fields;
     }
 
-    addField(type:FieldType, name:string) :this {
-        this.fields.push({type, name});
+    addField(type: FieldType, name: string): this {
+        this.fields.push({ type, name });
         return this;
     }
 }
