@@ -12,6 +12,7 @@ export class Encoder {
             case FieldType.String: return this.str(value);
             case FieldType.Buffer: return this.buf(value);
             case FieldType.Object: return this.json(value);
+            case FieldType.Array: return this.json(value);
         }
     }
 

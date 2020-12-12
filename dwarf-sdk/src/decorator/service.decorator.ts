@@ -1,3 +1,5 @@
+import { IMethodInfo } from "dwarf-common";
+
 const SERVICE_NAME_KEY = Symbol.for("name");
 const SERVICE_INFO_KEY = Symbol.for("info");
 
@@ -9,19 +11,6 @@ export function Service(name: string) {
 
 export function getName(o: any): string {
     return o.constructor[SERVICE_NAME_KEY];
-}
-
-
-export interface IMethodExample {
-    name: string;
-    payload: any;
-}
-
-export interface IMethodInfo {
-    name?: string;
-    description?: string;
-    examples?: IMethodExample[];
-    method?: string;
 }
 
 export function Method(methodInfo: IMethodInfo) {
@@ -36,6 +25,6 @@ export function Method(methodInfo: IMethodInfo) {
     }
 }
 
-export function getInfo(o: any): IMethodInfo {
+export function getInfo(o: any): IMethodInfo[] {
     return o.constructor[SERVICE_INFO_KEY];
 }

@@ -13,6 +13,7 @@ export class Decoder {
             case FieldType.String: return this.str();
             case FieldType.Buffer: return this.buf();
             case FieldType.Object: return this.json();
+            case FieldType.Array: return this.json();
         }
     }
 

@@ -1,3 +1,4 @@
+
 <script lang="ts">
 	import Service from "./Service.svelte";
 
@@ -8,6 +9,14 @@
 		registry = JSON.parse(m.data);
 	};
 </script>
+
+<style>
+	p {
+		color: rgb(10, 10, 10);
+		font-family: 'Comic Sans MS', cursive;
+		font-size: 2em;
+	}
+</style>
 
 <div>
 	<div>

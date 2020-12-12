@@ -3,5 +3,6 @@ export enum FieldType {
     "Number" = "Number",
     "String" = "String",
     "Buffer" = "Buffer",
-    "Object" = "Object"
+    "Object" = "Object",
+    "Array"  = "Array"
 }
