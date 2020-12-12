@@ -3,7 +3,7 @@ import { Auth, Service, Logger, ILogger, Method } from "dwarf-sdk";
 import { ReverseInput, ReverseOutput } from "./payload";
 
 @Service("demo")
-@Auth("app", "secret")
+@Auth("demo-service", "secret")
 export class DemoService {
 
     @Logger

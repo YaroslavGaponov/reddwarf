@@ -3,6 +3,7 @@ import { Login, Logout, Fail, Ok, ProtocolManager, Register, Unregister, ILogger
 import { IBroker } from "../interface/broker.interface";
 import { Broker } from "../decorator";
 import { IClient } from "../interface/client.interface";
+import { IncomingMessage } from "http";
 
 export class Client implements IClient {
 
@@ -16,17 +17,18 @@ export class Client implements IClient {
     public readonly send: (data: Buffer) => void;
     private readonly protocol = new ProtocolManager();
 
+    private applicationId:string = "unknown";
+
     private readonly services: Set<string> = new Set();
     private readonly channels: Set<string> = new Set();
 
-    constructor(private readonly socket: WebSocket) {
+    constructor(private readonly socket: WebSocket, private readonly request: IncomingMessage) {
 
         this.logger.debug(`New client ${this.id} is connected 🤝`);
 
         this.send = ((data: Buffer) => this.socket.send(data)).bind(this);
         this.onMessage = this.onMessage.bind(this);
         this.close = this.close.bind(this);
-
     }
 
     onMessage(data: Buffer): void {
@@ -36,6 +38,7 @@ export class Client implements IClient {
         switch (request.type) {
 
             case MessageType.Login:
+                this.applicationId = request.applicationId;
                 response = new Ok(request.id);
                 break;
 
@@ -45,7 +48,7 @@ export class Client implements IClient {
 
             case MessageType.Register:
                 this.broker.subscribe(`service:${request.name}`, this.send);
-                this.broker.broadcast(`discovery:register`, { id: this.id, name: request.name, info: request.info });
+                this.broker.broadcast(`discovery:register`, { id: this.id, host: this.request.socket.remoteAddress, applicationId: this.applicationId, name: request.name, info: request.info });
                 this.services.add(request.name);
                 response = new Ok(request.id);
                 break;

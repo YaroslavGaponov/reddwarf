@@ -1,4 +1,4 @@
-import { createServer } from "http";
+import { createServer, IncomingMessage } from "http";
 import WebSocket, { Data, Server } from "ws";
 import { Client } from "../client";
 import { IClient, INetworkServer } from "../interface";
@@ -14,8 +14,8 @@ export class WSServer implements INetworkServer {
 
     constructor(private readonly port: number) {
         const wss = new Server({ server: this.server });
-        wss.on("connection", (socket: WebSocket) => {
-            const client = new Client(socket);
+        wss.on("connection", (socket: WebSocket, request: IncomingMessage) => {
+            const client = new Client(socket, request);
             this.clients.add(client);
             socket
                 .on("message", (data: Data) => {
