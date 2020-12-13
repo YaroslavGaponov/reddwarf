@@ -5,23 +5,28 @@ tiny microservice framework for typescript
 
 # Start/stop
 
+## Required
+
+ - docker
+ - docker-compose
+ - make
+
 ## Start
 
 ```sh
-docker-compose build
-docker-compose up
+make start
 ```
 
 ## Monitor
 
 ```sh
-http://localhost:8081/
+make monitor
 ```
 
 ## Stop
 
 ```sh
-docker-compose down
+make stop
 ```
 
 # Components

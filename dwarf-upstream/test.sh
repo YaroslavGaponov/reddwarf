@@ -1,1 +1,2 @@
-curl http://localhost:8082/upstream/demo/reverse -d '{"str": "Upstream test"}'  -H "Content-Type: application/json"
+curl http://localhost:8082/upstream/dwarf-demo/reverse -d '{"str": "Upstream test"}'  -H "Content-Type: application/json"
+curl http://localhost:8082/upstream/dwarf-demo/rreverse -d '{"str": "Upstream test"}'  -H "Content-Type: application/json"

@@ -2,7 +2,7 @@ import { Client, IAccess } from "dwarf-sdk";
 
 export class DemoClient {
 
-    @Client("app", "secret")
+    @Client("demo-client", "secret")
     private readonly client!: IAccess;
 
     async connect() {
@@ -20,7 +20,7 @@ export class DemoClient {
     async run() {
 
         // 1. request/response functionallity
-        const response = await this.client.request("demo", "reverse", { str: "hello world 123" }); console.log(`request: payload=${JSON.stringify(response)}`);
+        const response = await this.client.request("dwarf-demo", "reverse", { str: "hello world 123" }); console.log(`request: payload=${JSON.stringify(response)}`);
 
         // 2. notification functionallity
         await this.client.subscribe("channelTest", this.onNotification);

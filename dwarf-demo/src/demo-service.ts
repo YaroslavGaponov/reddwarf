@@ -2,14 +2,14 @@
 import { Auth, Service, Logger, ILogger, Method, Client, IAccess } from "dwarf-sdk";
 import { ReverseInput, ReverseOutput } from "./payload";
 
-@Service("demo")
+@Service("dwarf-demo")
 @Auth("demo-service", "secret")
 export class DemoService {
 
     @Logger
     private readonly logger!: ILogger;
 
-    @Client("demo-client", "secret")
+    @Client("demo-service", "secret")
     private readonly client!: IAccess;
 
     @Method({
@@ -50,8 +50,8 @@ export class DemoService {
     })
     async rreverse(payload: ReverseInput): Promise<ReverseOutput> {
         this.logger.debug("rreverse method is called");
-        await this.client.connect();
-        const result = await this.client.request("demo", "reverse", payload);
-        return this.client.request("demo", "reverse", result);
+        const result = await this.client.request("dwarf-demo", "reverse", payload);
+        const result2 = await this.client.request("dwarf-demo", "reverse", result);
+        return result2;
     }
 }
