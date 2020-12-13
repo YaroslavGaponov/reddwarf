@@ -3,12 +3,16 @@ import { Level } from "../type";
 
 export class Logger implements ILogger {
 
-    constructor(private readonly level: Level) { }
+    constructor(private level: Level) { }
 
     private log(level: Level, s: string): void {
         if (this.level & level) {
             process.stdout.write(`${new Date().toISOString()} ${Level[level]}:\t${s}\n`);
         }
+    }
+
+    setLevel(level: Level): void {
+        this.level = level;
     }
 
     info(s: string): void {

@@ -1,8 +1,8 @@
 import { AccessOptions } from "./access-options";
 import WebSocket, { Data } from "ws";
-import { ProtocolManager, Login, Logout, Register, Request, Response, Unregister, Logger, ILogger, Subscribe, Unsubscribe, Notify, MessageType } from "dwarf-common";
+import { ProtocolManager, Login, Logout, Register, Request, Response, Unregister, Logger, ILogger, Subscribe, Unsubscribe, Notify, MessageType, Fail } from "dwarf-common";
 import { IAccess } from "../interface";
-import {getName, getInfo} from "../decorator";
+import { getName, getInfo } from "../decorator";
 
 export class Access implements IAccess {
 
@@ -14,102 +14,25 @@ export class Access implements IAccess {
 
     private readonly services: Map<string, any> = new Map();
     private readonly subscribers: Map<string, Set<Function>> = new Map();
-    private readonly reply: Map<string, Function> = new Map();
+    private readonly replies: Map<string, Function> = new Map();
 
     constructor(private readonly options: AccessOptions) { }
 
-    private _connect(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            this.client = new WebSocket(`ws://${this.options.host}:${this.options.port}/gateway`);
-            this.client
-                .once("open", resolve)
-                .once("error", reject)
-                .on("message", (data: Data) => this.dispatcher(data));
-        });
-    }
-
-    private async dispatcher(data: Data) {
-        const message = this.protocol.decode(data as Buffer);
-
-        switch (message.type) {
-
-            case MessageType.Request: {
-                const { id, name, op, payload } = message;
-                const service = this.services.get(name);
-                const response = new Response(id);
-                response.name = name;
-                response.op = op;
-                response.payload = await service[op](payload);
-                const packet = this.protocol.encode(response);
-                this.client?.send(packet);
-                return;
-            }
-
-            case MessageType.Notify: {
-                const { channel, payload } = message;
-                const handlers = this.subscribers.get(channel);
-                if (handlers) {
-                    handlers.forEach((handler: Function) => handler(channel, payload));
-                }
-                return;
-            }
-
-            default: {
-                if (this.reply.has(message.id)) {
-                    const handler = this.reply.get(message.id);
-                    this.reply.delete(message.id);
-                    if (handler) {
-                        handler(message);
-                    }
-                } else {
-                    this.logger.warn(`Client does not found handler for ${JSON.stringify(message)} 😱`);
-                }
-                return;
-            }
-        }
-
-    }
-
-    private _login(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            const login = new Login();
-            login.applicationId = this.options.applicationId;
-            login.secretKey = this.options.secretKey;
-            const packet = this.protocol.encode(login);
-            this.reply.set(login.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
-            this.client?.send(packet);
-        });
-    }
-
     async connect(): Promise<void> {
-        await this._connect();
+        await this.open();
         this.logger.debug(`Client is connected to gateway 👍`);
-        await this._login();
+        await this.login();
         this.logger.debug("Client is logged in 👌");
     }
 
-
-    private _logout(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            const logout = new Logout();
-            const packet = this.protocol.encode(logout);
-            this.reply.set(logout.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
-            this.client?.send(packet);
-        });
-    }
-
-    private _disconnect() {
-        this.client?.close();
-    }
-
     async disconnect(): Promise<void> {
-        await this._logout();
+        await this.logout();
         this.logger.debug("Client is logged out 🤚");
-        await this._disconnect();
+        await this.close();
         this.logger.debug("Client is disconnected from gateway 👎 ");
     }
 
-    async register(service: any): Promise<void> {
+    register(service: any): Promise<void> {
         return new Promise((resolve, reject) => {
             const name = getName(service);
             const info = getInfo(service);
@@ -118,36 +41,36 @@ export class Access implements IAccess {
             reqister.name = name;
             reqister.info = info;
             const packet = this.protocol.encode(reqister);
-            this.reply.set(reqister.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.replies.set(reqister.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
             this.client?.send(packet);
         });
     }
 
-    async unregister(service: any): Promise<void> {
+    unregister(service: any): Promise<void> {
         return new Promise((resolve, reject) => {
             const name = getName(service);
             this.services.delete(name);
             const unreqister = new Unregister();
-            unreqister.name =  name;
+            unreqister.name = name;
             const packet = this.protocol.encode(unreqister);
-            this.reply.set(unreqister.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.replies.set(unreqister.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
             this.client?.send(packet);
         });
     }
 
-    async request(name: string, op: string, payload: any): Promise<any> {
+    request(name: string, op: string, payload: any): Promise<any> {
         return new Promise((resolve, reject) => {
             const request = new Request();
             request.name = name;
             request.op = op;
             request.payload = payload;
             const packet = this.protocol.encode(request);
-            this.reply.set(request.id, (response: Response) => resolve(response.payload));
+            this.replies.set(request.id, (m: any) => m.type === MessageType.Response ? resolve(m.payload) : reject());
             this.client?.send(packet);
         });
     }
 
-    async subscribe(channel: string, handler: Function): Promise<void> {
+    subscribe(channel: string, handler: Function): Promise<void> {
         return new Promise((resolve, reject) => {
 
             const handlers = this.subscribers.get(channel) || new Set();
@@ -157,12 +80,12 @@ export class Access implements IAccess {
             const subscribe = new Subscribe();
             subscribe.channel = channel;
             const packet = this.protocol.encode(subscribe);
-            this.reply.set(subscribe.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.replies.set(subscribe.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
             this.client?.send(packet);
         });
     }
 
-    async unsubscribe(channel: string, handler: Function): Promise<void> {
+    unsubscribe(channel: string, handler: Function): Promise<void> {
         return new Promise((resolve, reject) => {
 
             const handlers = this.subscribers.get(channel);
@@ -172,20 +95,100 @@ export class Access implements IAccess {
             const unsubscribe = new Unsubscribe();
             unsubscribe.channel = channel;
             const packet = this.protocol.encode(unsubscribe);
-            this.reply.set(unsubscribe.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.replies.set(unsubscribe.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
             this.client?.send(packet);
         });
     }
 
-    async notify(channel: string, payload: any): Promise<void> {
+    notify(channel: string, payload: any): Promise<void> {
         return new Promise((resolve, reject) => {
             const notify = new Notify();
             notify.channel = channel;
             notify.payload = payload;
             const packet = this.protocol.encode(notify);
-            this.reply.set(notify.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.replies.set(notify.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
             this.client?.send(packet);
         });
+    }
+
+    private open(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.client = new WebSocket(`ws://${this.options.host}:${this.options.port}/gateway`);
+            this.client
+                .once("open", resolve)
+                .once("error", reject)
+                .on("message", this.dispatcher.bind(this));
+        });
+    }
+
+    private dispatcher(data: Data): any {
+
+        const message = this.protocol.decode(data as Buffer);
+
+        switch (message.type) {
+            case MessageType.Request: return this.onRequest(message);
+            case MessageType.Notify: return this.onNotify(message);
+            default:
+                if (this.replies.has(message.id)) {
+                    const handler = this.replies.get(message.id);
+                    this.replies.delete(message.id);
+                    if (handler) {
+                        handler(message);
+                    }
+                } else {
+                    this.logger.warn(`Client does not found handler for ${JSON.stringify(message)} 😱`);
+                }
+        }
+    }
+
+    private login(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const login = new Login();
+            login.applicationId = this.options.applicationId;
+            login.secretKey = this.options.secretKey;
+            const packet = this.protocol.encode(login);
+            this.replies.set(login.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.client?.send(packet);
+        });
+    }
+
+    private logout(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const logout = new Logout();
+            const packet = this.protocol.encode(logout);
+            this.replies.set(logout.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.client?.send(packet);
+        });
+    }
+
+    private close() {
+        this.client?.close();
+    }
+
+    private async onRequest(request: Request) {
+        const { id, name, op, payload } = request;
+        this.logger.debug(`request ${name}.${op}: ${JSON.stringify(payload)}`);
+        try {
+            const service = this.services.get(name);
+            const result = await service[op](payload);
+            const response = new Response(id);
+            response.name = name;
+            response.op = op;
+            response.payload = result;
+            const packet = this.protocol.encode(response);
+            this.client?.send(packet);
+        } catch (ex) {
+            this.logger.error(ex.toString());
+            const fail = new Fail(id, ex.toString());
+            const packet = this.protocol.encode(fail);
+            this.client?.send(packet);
+        }
+    }
+
+    private onNotify(notify: Notify) {
+        const { channel, payload } = notify;
+        const handlers = this.subscribers.get(channel);
+        handlers?.forEach((handler: Function) => handler(channel, payload));
     }
 
 }

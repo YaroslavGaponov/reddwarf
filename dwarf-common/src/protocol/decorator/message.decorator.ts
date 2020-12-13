@@ -21,7 +21,7 @@ export function Field(name?: string) {
     }
 }
 
-export function getSchema(ctor: any) {
+export function getSchema(ctor: any): Schema {
     return ctor[SCHEMA_KEY];
 }
 

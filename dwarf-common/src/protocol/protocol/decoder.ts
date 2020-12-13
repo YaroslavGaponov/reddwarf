@@ -17,32 +17,32 @@ export class Decoder {
         }
     }
 
-    bool(): boolean {
+    private bool(): boolean {
         const n = this.packet.readInt8(this.cursor);
         this.cursor++;
         return n ? true : false;
     }
 
-    int(): number {
+    private int(): number {
         const n = this.packet.readInt32BE(this.cursor);
         this.cursor += 4;
         return n;
     }
 
-    uint(): number {
+    private uint(): number {
         const n = this.packet.readUInt32BE(this.cursor);
         this.cursor += 4;
         return n;
     }
 
-    str(): string {
+    private str(): string {
         const length = this.uint();
         const n = this.packet.subarray(this.cursor, this.cursor + length);
         this.cursor += length;
         return n.toString();
     }
 
-    buf(): Buffer {
+    private buf(): Buffer {
         const length = this.uint();
         const n = this.packet.subarray(this.cursor, this.cursor + length);
         this.cursor += length;

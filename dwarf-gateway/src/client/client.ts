@@ -1,4 +1,4 @@
-import WebSocket, { Data } from "ws";
+import WebSocket from "ws";
 import { Login, Logout, Fail, Ok, ProtocolManager, Register, Unregister, ILogger, Logger, MessageType } from "dwarf-common";
 import { IBroker } from "../interface/broker.interface";
 import { Broker } from "../decorator";
@@ -17,7 +17,8 @@ export class Client implements IClient {
     public readonly send: (data: Buffer) => void;
     private readonly protocol = new ProtocolManager();
 
-    private applicationId:string = "unknown";
+    private isLoggin = false;
+    private applicationId: string = "unknown";
 
     private readonly services: Set<string> = new Set();
     private readonly channels: Set<string> = new Set();
@@ -32,21 +33,31 @@ export class Client implements IClient {
     }
 
     onMessage(data: Buffer): void {
+
         const request = this.protocol.decode(data as Buffer);
         let response = null;
+
+        this.logger.trace(`Received ${JSON.stringify(request)}`);
 
         switch (request.type) {
 
             case MessageType.Login:
+                this.isLoggin = true;
                 this.applicationId = request.applicationId;
                 response = new Ok(request.id);
                 break;
 
             case MessageType.Logout:
+                this.isLoggin = false;
+                this.applicationId = "unknown";
                 response = new Ok(request.id);
                 break;
 
             case MessageType.Register:
+                if (!this.isLoggin) {
+                    response = new Fail(request.id, "Client is not logged in");
+                    break;
+                }
                 this.broker.subscribe(`service:${request.name}`, this.send);
                 this.broker.broadcast(`discovery:register`, { id: this.id, host: this.request.socket.remoteAddress, applicationId: this.applicationId, name: request.name, info: request.info });
                 this.services.add(request.name);
@@ -54,6 +65,10 @@ export class Client implements IClient {
                 break;
 
             case MessageType.Unregister:
+                if (!this.isLoggin) {
+                    response = new Fail(request.id, "Client is not logged in");
+                    break;
+                }
                 this.broker.unsubscribe(`service:${request.name}`, this.send);
                 this.broker.broadcast(`discovery:unregister`, { id: this.id, name: request.name });
                 this.services.delete(request.name);
@@ -61,38 +76,66 @@ export class Client implements IClient {
                 break;
 
             case MessageType.Request:
+                if (!this.isLoggin) {
+                    response = new Fail(request.id, "Client is not logged in");
+                    break;
+                }
                 this.broker.subscribe(`response:${request.id}`, this.send);
                 this.broker.send(`service:${request.name}`, data);
                 break;
 
             case MessageType.Response:
+                if (!this.isLoggin) {
+                    response = new Fail(request.id, "Client is not logged in");
+                    break;
+                }
                 this.broker.send(`response:${request.id}`, data);
                 break;
 
+            case MessageType.Fail:
+                if (!this.isLoggin) {
+                    response = new Fail(request.id, "Client is not logged in");
+                    break;
+                }
+                this.broker.send(`response:${request.id}`, data);
+                break;
 
             case MessageType.Subscribe:
+                if (!this.isLoggin) {
+                    response = new Fail(request.id, "Client is not logged in");
+                    break;
+                }
                 this.broker.subscribe(request.channel, this.send);
                 this.channels.add(request.channel);
                 response = new Ok(request.id);
                 break;
 
             case MessageType.Unsubscribe:
+                if (!this.isLoggin) {
+                    response = new Fail(request.id, "Client is not logged in");
+                    break;
+                }
                 this.broker.unsubscribe(request.channel, this.send);
                 this.channels.delete(request.channel);
                 response = new Ok(request.id);
                 break;
 
             case MessageType.Notify:
+                if (!this.isLoggin) {
+                    response = new Fail(request.id, "Client is not logged in");
+                    break;
+                }
                 this.broker.broadcast(request.channel, data);
                 response = new Ok(request.id);
                 break;
 
             default:
-                response = new Fail(request.id);
+                response = new Fail(request.id, "Message type is not supported");
                 break;
         }
 
         if (response) {
+            this.logger.trace(`Sent ${JSON.stringify(response)}`);
             this.send(this.protocol.encode(response) as Buffer);
         }
 
@@ -100,11 +143,15 @@ export class Client implements IClient {
 
     close(): void {
         this.logger.debug(`Client ${this.id} is disconnected`);
+
         this.services.forEach((name: string) => {
             this.broker.unsubscribe(`service:${name}`, this.send);
             this.broker.broadcast(`discovery:unregister`, { id: this.id, name });
         });
+        this.services.clear();
+
         this.channels.forEach((channel: string) => this.broker.unsubscribe(channel, this.send));
+        this.channels.clear();
     }
 
 }

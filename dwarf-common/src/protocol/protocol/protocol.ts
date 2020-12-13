@@ -1,7 +1,8 @@
-import { Schema, SchemaNode } from "./schema";
-import { Encoder, Decoder } from "./implement";
-import { getSchema } from "./decorator";
-import { FieldType, MessageType } from "./type";
+import { Schema, SchemaNode } from "../schema";
+import { getSchema } from "../decorator";
+import { FieldType, MessageType } from "../type";
+import { Decoder } from "./decoder";
+import { Encoder } from "./encoder";
 
 export class Protocol<T> {
 

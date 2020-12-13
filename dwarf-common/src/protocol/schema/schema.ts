@@ -20,7 +20,7 @@ export class Schema {
     }
 
     addField(type: FieldType, name: string): this {
-        this.fields.push({ type, name });
+        this.fields.push({ type, name } as SchemaNode);
         return this;
     }
 }

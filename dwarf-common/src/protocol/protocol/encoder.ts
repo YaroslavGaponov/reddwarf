@@ -16,29 +16,28 @@ export class Encoder {
         }
     }
 
-
-    bool(n: boolean): this {
+    private bool(n: boolean): this {
         const buf = Buffer.alloc(1);
         buf.writeInt8(n ? 1 : 0);
         this.packet.push(buf);
         return this;
     }
 
-    int(n: number): this {
+    private int(n: number): this {
         const buf = Buffer.alloc(4);
         buf.writeInt32BE(n);
         this.packet.push(buf);
         return this;
     }
 
-    uint(n: number): this {
+    private uint(n: number): this {
         const buf = Buffer.alloc(4);
         buf.writeUInt32BE(n);
         this.packet.push(buf);
         return this;
     }
 
-    str(n: string): this {
+    private str(n: string): this {
         this.uint(n.length);
         const buf = Buffer.alloc(n.length);
         buf.write(n);
@@ -46,13 +45,13 @@ export class Encoder {
         return this;
     }
 
-    buf(n: Buffer): this {
+    private buf(n: Buffer): this {
         this.uint(n.length);
         this.packet.push(n);
         return this;
     }
 
-    json(n: any): this {
+    private json(n: any): this {
         const s = Buffer.from(JSON.stringify(n));
         this.uint(s.length);
         this.packet.push(s);

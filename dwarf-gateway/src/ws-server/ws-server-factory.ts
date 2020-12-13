@@ -1,4 +1,4 @@
-import { Setting } from "../decorator";
+import { Setting } from "dwarf-common";
 import { INetworkServer } from "../interface";
 import { WSServer } from "./ws-server";
 

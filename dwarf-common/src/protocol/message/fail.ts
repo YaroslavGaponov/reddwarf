@@ -7,7 +7,11 @@ export class Fail {
     @Field()
     id: string;
 
-    constructor(id: string = Math.random().toString(36).slice(2)) {
+    @Field()
+    reason: string;
+
+    constructor(id: string = Math.random().toString(36).slice(2), reason: string = "unknown") {
         this.id = id;
+        this.reason = reason;
     }
 }

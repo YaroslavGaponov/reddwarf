@@ -4,7 +4,7 @@
   "description": "dwarf common",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "npx tsc"
   },
   "devDependencies": {
     "@types/node": "^13.1.8",
@@ -15,5 +15,5 @@
     "reflect-metadata": "^0.1.13"
   },
   "author": "Yaroslav Gaponov",
-  "license": "ISC"
+  "license": "MIT"
 }
