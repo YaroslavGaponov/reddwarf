@@ -17,11 +17,15 @@ tiny microservice framework for typescript
 make start
 ```
 
+![Dwarf start](/_resource/dwarf-start.png)
+
 ## Monitor
 
 ```sh
 make monitor
 ```
+
+![Dwarf monitor](/_resource/dwarf-monitor.png)
 
 ## Stop
 
