@@ -16,7 +16,7 @@ export class DiscoveryService implements INetworkServer {
     @Logger
     private logger!: ILogger;
 
-    @Setting("DISCOVERY_INTERVAL", 3000)
+    @Setting("DISCOVERY_INTERVAL", 5000)
     private readonly interval!: number;
 
     private readonly protocol = new ProtocolManager();
@@ -27,13 +27,15 @@ export class DiscoveryService implements INetworkServer {
         this.register = this.register.bind(this);
         this.unregister = this.unregister.bind(this);
         this.notify = this.notify.bind(this);
+        this.setAnAlarm = this.setAnAlarm.bind(this);
     }
 
     async start(): Promise<void> {
         this.logger.info("Discovery service is starting 👍");
         this.broker.subscribe(DISCOVERY_REGISTER, this.register);
         this.broker.subscribe(DISCOVERY_UNREGISTER, this.unregister);
-        this.timerId = setInterval(this.notify, this.interval);
+        this.broker.subscribe(DISCOVERY_UPDATE, this.setAnAlarm);
+        this.setAnAlarm();
     }
 
     async stop(): Promise<void> {
@@ -41,6 +43,12 @@ export class DiscoveryService implements INetworkServer {
         clearInterval(this.timerId);
         this.broker.unsubscribe(DISCOVERY_REGISTER, this.register);
         this.broker.unsubscribe(DISCOVERY_UNREGISTER, this.unregister);
+        this.broker.unsubscribe(DISCOVERY_UPDATE, this.setAnAlarm);
+    }
+
+    private setAnAlarm() {
+        clearTimeout(this.timerId);
+        this.timerId = setTimeout(this.notify, this.interval);
     }
 
     private notify() {
