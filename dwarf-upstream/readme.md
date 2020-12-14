@@ -19,7 +19,7 @@ Upstream service exposes Dwarf API as REST API
 
 | Name 	            | Default 	| Description  	|
 |---------------	|---------	|--------------	|
-| GATEWAY_HOST      | 0.0.0.0   | Gateway host  |
+| GATEWAY_HOST      | localhost | Gateway host  |
 | GATEWAY_PORT      | 38080     | Gateway port  |
 | PORT          	| 38082    	| Upstream port |
 

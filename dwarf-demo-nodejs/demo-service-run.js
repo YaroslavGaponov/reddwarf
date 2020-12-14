@@ -2,7 +2,7 @@ const { Access } = require("dwarf-sdk");
 const { name, info, service } = require("./demo-service");
 
 const options = {
-    host: process.env.GATEWAY_HOST || "0.0.0.0",
+    host: process.env.GATEWAY_HOST || "localhost",
     port: process.env.GATEWAY_PORT || 8080,
     applicationId: "demo-service-nodejs",
     secretKey: "<empty>"

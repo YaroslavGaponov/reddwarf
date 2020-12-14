@@ -19,7 +19,7 @@ UI part based on svelte framework.
 
 | Name 	            | Default 	| Description  	|
 |---------------	|---------	|--------------	|
-| GATEWAY_HOST      | 0.0.0.0   | Gateway host  |
+| GATEWAY_HOST      | localhost | Gateway host  |
 | GATEWAY_PORT      | 38080     | Gateway port  |
 | PORT          	| 38081    	| Monitor port  |
 

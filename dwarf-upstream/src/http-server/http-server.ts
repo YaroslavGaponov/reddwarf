@@ -36,7 +36,7 @@ export class HttpServer implements INetworkServer {
     }
 
     async start(): Promise<void> {
-        this.logger.info(`Upstrean service is starting at http://0.0.0.0:${this.port}`);
+        this.logger.info(`Upstream service is starting at http://0.0.0.0:${this.port}`);
         await this.client.connect();
         return new Promise(resolve => this.app.listen(this.port, resolve));
     }
