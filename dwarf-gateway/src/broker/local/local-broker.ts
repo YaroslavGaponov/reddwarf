@@ -1,8 +1,11 @@
-import { IBroker } from "../interface/broker.interface";
+import { IBroker } from "../../interface/broker.interface";
 
-export class Broker implements IBroker {
+export class LocalBroker implements IBroker {
 
     private readonly subscribers: Map<string, Set<Function>> = new Map();
+
+    async connect(): Promise<void> { }
+    async disconnect(): Promise<void> { }
 
     subscribe(name: string, handler: Function): boolean {
         const handlers = this.subscribers.get(name) || new Set();

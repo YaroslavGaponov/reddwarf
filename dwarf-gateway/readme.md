@@ -14,6 +14,7 @@ Gateway is the single entry point for all clients.
 
 # Environment variables
 
-| Name 	| Default 	| Description  	|
-|------	|---------	|--------------	|
-| PORT 	| 38080    	| Gateway port 	|
+| Name 	        | Default 	| Description  	|
+|-----------	|---------	|--------------	|
+| PORT  	    | 38080    	| Gateway port 	|
+| BROKER_TYPE   |local      | Broker type   |

@@ -8,6 +8,9 @@ services:
       - 38080
     ports:
       - "38080:38080"
+    environment: 
+      - PORT=38080
+      - BROKER_TYPE=local
 
   dwarf-upstream:
     build: 
