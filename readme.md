@@ -7,7 +7,7 @@ tiny microservice framework
 * [Overview](#overview)
 * [Supported languages](#supported-languages)
 * [Supported message brokers](#supported-message-brokers)
-* [How to try](#how_to_try)
+* [How to try](#how-to-try)
   * [Required](#required)
   * [Start all core components](#start-all-core-components)
   * [Open monitor](#open-monitor)
