@@ -23,16 +23,6 @@ services:
     ports:
       - "8082:8082"
 
-  dwarf-demo:
-    build: 
-      context: .
-      dockerfile: ./dockerfile.demo
-    links:
-      - dwarf-gateway
-    environment: 
-      - GATEWAY_HOST=dwarf-gateway
-      - GATEWAY_PORT=8080
-
   dwarf-monitor:
     build: 
       context: .
@@ -46,3 +36,23 @@ services:
       - 8081
     ports:
       - "8081:8081"
+
+  dwarf-demo-typescript:
+    build: 
+      context: .
+      dockerfile: ./dockerfile.demo-typescript
+    links:
+      - dwarf-gateway
+    environment: 
+      - GATEWAY_HOST=dwarf-gateway
+      - GATEWAY_PORT=8080
+
+  dwarf-demo-nodejs:
+    build: 
+      context: .
+      dockerfile: ./dockerfile.demo-nodejs
+    links:
+      - dwarf-gateway
+    environment: 
+      - GATEWAY_HOST=dwarf-gateway
+      - GATEWAY_PORT=8080

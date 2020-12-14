@@ -1,8 +1,7 @@
 import { AccessOptions } from "./access-options";
 import WebSocket, { Data } from "ws";
-import { ProtocolManager, Login, Logout, Register, Request, Response, Unregister, Logger, ILogger, Subscribe, Unsubscribe, Notify, MessageType, Fail } from "dwarf-common";
+import { ProtocolManager, Login, Logout, Register, Request, Response, Unregister, Logger, ILogger, Subscribe, Unsubscribe, Notify, MessageType, Fail, IMethodInfo } from "dwarf-common";
 import { IAccess } from "../interface";
-import { getName, getInfo } from "../decorator";
 
 export class Access implements IAccess {
 
@@ -32,10 +31,8 @@ export class Access implements IAccess {
         this.logger.debug("Client is disconnected from gateway 👎 ");
     }
 
-    register(service: any): Promise<void> {
+    register(name: string, info: IMethodInfo[], service: any): Promise<void> {
         return new Promise((resolve, reject) => {
-            const name = getName(service);
-            const info = getInfo(service);
             this.services.set(name, service);
             const reqister = new Register();
             reqister.name = name;
@@ -46,9 +43,8 @@ export class Access implements IAccess {
         });
     }
 
-    unregister(service: any): Promise<void> {
+    unregister(name: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            const name = getName(service);
             this.services.delete(name);
             const unreqister = new Unregister();
             unreqister.name = name;

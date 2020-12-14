@@ -1,24 +1,38 @@
-Dwarf demo service & client
+Dwarf demo typescript
 =========
-examples for simple dwarf service and dwarf client
+Examples
 
+# Sections
 
-# Service
+* [Dwarf service](#dwarf-service)
+    * [Source](#source)
+    * [Run](#run)
+* [Dwarf client](#dwarf-client)
+    * [Source](#source-1)
+    * [Run](#run-1)
+
+# Dwarf service
 
 ## Source
+
 ```typescript
-@Service("demo")
-@Auth("app", "secret")
+// demo-service.ts
+
+@Service("dwarf-demo")
+@Auth("demo-service-typescript", "<empty>")
 export class DemoService {
 
     @Logger
     private readonly logger!: ILogger;
 
+    @Client("demo-service-typescript", "<empty>")
+    private readonly client!: IAccess;
+
     @Method({
         name: "reverse",
         description: "Reverse string",
         examples: [{
-            name: "simple",
+            name: "simple1",
             payload: {
                 str: "hello"
             }
@@ -28,29 +42,31 @@ export class DemoService {
         this.logger.debug("reverse method is called");
         return { str: payload.str.split('').reverse().join('') };
     }
-
 }
+
+// demo-service-run.ts
+const service = new DemoService();
+const serviceHost = new ServiceHost(service);
+await serviceHost.start();
 ```
 
 ## Run
+
 ```sh
+npm i
+npx tsc
 npm run service
 ```
 
-## Output
-```output
-2020-12-10T11:29:43.685Z INFO: connect to gateway is ok 👍
-2020-12-10T11:29:43.688Z INFO: login is ok 👌
-2020-12-10T11:29:47.169Z TRACE: reverse method is called
-```
-
-# Client
+# Dwarf client
 
 ## Source
+
 ```typescript
+// demo-client.ts
 export class DemoClient {
 
-    @Client("app", "secret")
+    @Client("demo-client", "secret")
     private readonly client!: IAccess;
 
     async connect() {
@@ -67,29 +83,29 @@ export class DemoClient {
 
     async run() {
 
-        // 1. request/response functionallity
-        const response = await this.client.request("demo", "reverse", { str: "hello world 123" }); console.log(`request: payload=${JSON.stringify(response)}`);
+        // 1. request/response functionality
+        const response = await this.client.request("dwarf-demo", "reverse", { str: "hello world 123" });
+        console.log(`response: payload=${JSON.stringify(response)}`);
 
-        // 2. notification functionallity
+        // 2. notification functionality
         await this.client.subscribe("channelTest", this.onNotification);
         await this.client.notify("channelTest", { "hello": "hello world" });
         await this.client.unsubscribe("channelTest", this.onNotification);
 
     }
 }
+
+// demo-client-run
+const client = new DemoClient();
+await client.connect();
+await client.run();
+await client.disconnect();
 ```
 
 ## Run
-```sh
-npm run client
-```
 
-## Output
-```output
-2020-12-10T11:29:47.165Z INFO: connect to gateway is ok 👍
-2020-12-10T11:29:47.167Z INFO: login is ok 👌
-request: payload={"str":"321 dlrow olleh"}
-notification: channel=channelTest payload={"hello":"hello world"}
-2020-12-10T11:29:47.172Z INFO: logout is ok 🤚
-2020-12-10T11:29:47.173Z INFO: disconnect from gateway is ok 👎 
+```sh
+npm i
+npx tsc
+npm run client
 ```

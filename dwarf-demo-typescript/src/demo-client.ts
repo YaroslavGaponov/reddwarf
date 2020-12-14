@@ -19,10 +19,11 @@ export class DemoClient {
 
     async run() {
 
-        // 1. request/response functionallity
-        const response = await this.client.request("dwarf-demo", "reverse", { str: "hello world 123" }); console.log(`request: payload=${JSON.stringify(response)}`);
+        // 1. request/response functionality
+        const response = await this.client.request("dwarf-demo", "reverse", { str: "hello world 123" });
+        console.log(`response: payload=${JSON.stringify(response)}`);
 
-        // 2. notification functionallity
+        // 2. notification functionality
         await this.client.subscribe("channelTest", this.onNotification);
         await this.client.notify("channelTest", { "hello": "hello world" });
         await this.client.unsubscribe("channelTest", this.onNotification);

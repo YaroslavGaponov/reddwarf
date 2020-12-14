@@ -1,7 +1,7 @@
 {
-  "name": "dwarf-demo",
+  "name": "dwarf-demo-typescript",
   "version": "0.0.1",
-  "description": "dwarf demo",
+  "description": "dwarf demo typescript",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -18,5 +18,5 @@
     "dwarf-sdk": "../dwarf-sdk"
   },
   "author": "Yaroslav Gaponov",
-  "license": "ISC"
+  "license": "MIT"
 }

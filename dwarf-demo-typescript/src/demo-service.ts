@@ -3,13 +3,13 @@ import { Auth, Service, Logger, ILogger, Method, Client, IAccess } from "dwarf-s
 import { ReverseInput, ReverseOutput } from "./payload";
 
 @Service("dwarf-demo")
-@Auth("demo-service", "secret")
+@Auth("demo-service-typescript", "<empty>")
 export class DemoService {
 
     @Logger
     private readonly logger!: ILogger;
 
-    @Client("demo-service", "secret")
+    @Client("demo-service-typescript", "<empty>")
     private readonly client!: IAccess;
 
     @Method({
