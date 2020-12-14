@@ -22,4 +22,6 @@ COPY dwarf-upstream/tsconfig.json dwarf-upstream/tsconfig.json
 RUN npm install --prefix dwarf-upstream
 RUN npx tsc --project dwarf-upstream
 
+EXPOSE  38082
+
 CMD [ "node", "./dwarf-upstream/dist/main.js" ]

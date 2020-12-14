@@ -8,7 +8,7 @@ export class AccessFactory {
     @Setting("GATEWAY_HOST", "0.0.0.0")
     static host: string;
 
-    @Setting("GATEWAY_PORT", 8080)
+    @Setting("GATEWAY_PORT", 38080)
     static port: number;
 
     static instance: IAccess;

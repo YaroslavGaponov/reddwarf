@@ -4,7 +4,7 @@ import { WSServer } from "./ws-server";
 
 export class WSServerFactory {
 
-    @Setting("PORT", 8080)
+    @Setting("PORT", 38080)
     private static readonly port: number;
 
     private static instance: INetworkServer;

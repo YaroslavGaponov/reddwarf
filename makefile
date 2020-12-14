@@ -5,4 +5,4 @@ stop:
 	docker-compose down
 
 monitor:
-	open http://localhost:8081/
+	open http://localhost:38081/

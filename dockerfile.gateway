@@ -16,6 +16,6 @@ COPY dwarf-gateway/tsconfig.json dwarf-gateway/tsconfig.json
 RUN npm install --prefix dwarf-gateway
 RUN npx tsc --project dwarf-gateway
 
-EXPOSE 8080
+EXPOSE 38080
 
 CMD [ "node", "./dwarf-gateway/dist/main.js" ]

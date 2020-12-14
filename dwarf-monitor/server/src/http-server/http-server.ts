@@ -10,11 +10,11 @@ export class HttpServer implements INetworkServer {
     @Logger
     private readonly logger!: ILogger;
 
-    @Setting("PORT", 8081)
+    @Setting("PORT", 38081)
     private readonly port!: number;
 
 
-    @Client("monitor", "secret")
+    @Client("monitor", "<empty>")
     private readonly client!: IAccess;
 
     private readonly app = express();
@@ -42,7 +42,7 @@ export class HttpServer implements INetworkServer {
     }
 
     async start(): Promise<void> {
-        this.logger.info(`Monitor service is starting at http://localhost:${this.port}`);
+        this.logger.info(`Monitor service is starting at http://0.0.0.0:${this.port}`);
         await this.client.connect();
         await this.client.subscribe("discovery:update", (channel: string, registry: any) => this.clients.forEach(client => client.send(JSON.stringify(registry))));
         return new Promise(resolve => this.server.listen(this.port, resolve));

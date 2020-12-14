@@ -71,7 +71,8 @@ make stop
 
 ### Wherefore
 
-  * a single simple protocol for accessing different message brokers
+  * single entry point
+  * simple protocol for accessing different message brokers
 
 [Dwarf-gateway](dwarf-gateway/readme.md)
 

@@ -6,9 +6,9 @@ import { Client, IAccess, ILogger, Logger, Setting } from "dwarf-sdk";
 export class HttpServer implements INetworkServer {
 
     @Logger
-    private readonly logger!:ILogger;
+    private readonly logger!: ILogger;
 
-    @Setting("PORT", 8082)
+    @Setting("PORT", 38082)
     private readonly port!: number;
 
 
@@ -19,8 +19,16 @@ export class HttpServer implements INetworkServer {
 
     constructor() {
         this.app.use(bodyParser.json());
-        this.app.post("/upstream/:name/:method", async (req, res)=> {
-            const {name, method} = req.params;
+
+        this.app.get("/upstream/:name/:method", async (req, res) => {
+            const { name, method } = req.params;
+            this.logger.trace(`request: ${name}.${method}: ${JSON.stringify(req.query)}`);
+            const response = await this.client.request(name as string, method as string, req.query);
+            res.json(response);
+        });
+
+        this.app.post("/upstream/:name/:method", async (req, res) => {
+            const { name, method } = req.params;
             this.logger.trace(`request: ${name}.${method}: ${JSON.stringify(req.body)}`);
             const response = await this.client.request(name as string, method as string, req.body);
             res.json(response);
@@ -28,7 +36,7 @@ export class HttpServer implements INetworkServer {
     }
 
     async start(): Promise<void> {
-        this.logger.info(`Upstrean service is starting at http://localhost:${this.port}`);
+        this.logger.info(`Upstrean service is starting at http://0.0.0.0:${this.port}`);
         await this.client.connect();
         return new Promise(resolve => this.app.listen(this.port, resolve));
     }

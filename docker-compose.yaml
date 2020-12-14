@@ -5,9 +5,9 @@ services:
       context: .
       dockerfile: ./dockerfile.gateway
     expose: 
-      - 8080
+      - 38080
     ports:
-      - "8080:8080"
+      - "38080:38080"
 
   dwarf-upstream:
     build: 
@@ -17,11 +17,11 @@ services:
       - dwarf-gateway
     environment: 
       - GATEWAY_HOST=dwarf-gateway
-      - GATEWAY_PORT=8080
+      - GATEWAY_PORT=38080
     expose: 
       - 8082
     ports:
-      - "8082:8082"
+      - "38082:38082"
 
   dwarf-monitor:
     build: 
@@ -31,11 +31,11 @@ services:
       - dwarf-gateway
     environment: 
       - GATEWAY_HOST=dwarf-gateway
-      - GATEWAY_PORT=8080
+      - GATEWAY_PORT=38080
     expose: 
       - 8081
     ports:
-      - "8081:8081"
+      - "38081:38081"
 
   dwarf-demo-typescript:
     build: 
@@ -45,7 +45,7 @@ services:
       - dwarf-gateway
     environment: 
       - GATEWAY_HOST=dwarf-gateway
-      - GATEWAY_PORT=8080
+      - GATEWAY_PORT=38080
 
   dwarf-demo-nodejs:
     build: 
@@ -55,4 +55,4 @@ services:
       - dwarf-gateway
     environment: 
       - GATEWAY_HOST=dwarf-gateway
-      - GATEWAY_PORT=8080
+      - GATEWAY_PORT=38080

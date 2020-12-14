@@ -25,6 +25,6 @@ COPY dwarf-monitor/server dwarf-monitor/server
 RUN npm install --prefix dwarf-monitor/server
 RUN npx tsc --project dwarf-monitor/server
 
-EXPOSE 8081
+EXPOSE 38081
 
 CMD [ "node", "./dwarf-monitor/server/dist/main.js" ]
