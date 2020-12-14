@@ -27,8 +27,8 @@ The goal of this framework is to create a convenient and flexible platform for d
 
 # Supported languages
 
-  - [Node.js:Typescript](dwarf-demo-typescript/readme.md)
-  - [Node.js:Javascript](dwarf-demo-nodejs/readme.md)
+  - [Node.js Typescript](dwarf-demo-typescript/readme.md)
+  - [Node.js Javascript](dwarf-demo-nodejs/readme.md)
   - ...
 
 # Supported message brokers
