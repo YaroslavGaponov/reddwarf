@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import { Schema, SchemaNode } from "../schema";
 import { getSchema } from "../decorator";
 import { FieldType, MessageType } from "../type";
@@ -15,7 +16,7 @@ export class Protocol<T> {
     }
 
     static getMessageType(b: Buffer): MessageType {
-        const decoder = new Decoder(b);
+        const decoder = new Decoder(b.slice(16));
         const version = decoder.read(FieldType.Number);
         if (version !== Protocol.VERSION) {
             throw new ProtocolDecodeError(`Version ${version} is not correct.`);
@@ -31,11 +32,23 @@ export class Protocol<T> {
 
         this.schema.getFields().forEach((e: SchemaNode) => encoder.write(e.type, o[e.name]));
 
-        return encoder.raw();
+        const raw = encoder.raw();
+        const hash = createHash("md5").update(raw).digest();
+
+        return Buffer.concat([hash, raw]);
     }
 
     decode(b: Buffer): any {
-        const decode = new Decoder(b);
+
+        const hash = b.slice(0, 16);
+        const raw = b.slice(16);
+
+        const hash2 = createHash("md5").update(raw).digest();
+        if (hash.compare(hash2) !== 0) {
+           throw new ProtocolDecodeError("Hash is not correct.");
+        }
+
+        const decode = new Decoder(raw);
 
         const o = new this.ctor() as any;
         const version = decode.read(FieldType.Number);
