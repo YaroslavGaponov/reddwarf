@@ -59,6 +59,14 @@ make monitor
 
 ![Dwarf monitor](/_resource/dwarf-monitor.png)
 
+## REST access
+
+```sh
+curl "http://localhost:38082/upstream/dwarf-demo/reverse?str=Hello"
+```
+
+![Dwarf upstream](/_resource/dwarf-upstream.png)
+
 ## Stop all core components
 
 ```sh

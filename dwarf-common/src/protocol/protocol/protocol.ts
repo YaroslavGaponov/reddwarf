@@ -10,7 +10,7 @@ export class Protocol<T> {
     public static readonly VERSION = 0;
     private readonly schema: Schema;
 
-    constructor(ctor: { new(): T }) {
+    constructor(private readonly ctor: { new(): T }) {
         this.schema = getSchema(ctor);
     }
 
@@ -37,7 +37,7 @@ export class Protocol<T> {
     decode(b: Buffer): any {
         const decode = new Decoder(b);
 
-        const o = {} as any;
+        const o = new this.ctor() as any;
         const version = decode.read(FieldType.Number);
         if (version !== Protocol.VERSION) {
             throw new ProtocolDecodeError(`Version ${version} is not correct.`);

@@ -1,7 +1,8 @@
 import { AccessOptions } from "./access-options";
 import WebSocket, { Data } from "ws";
-import { ProtocolManager, Login, Logout, Register, Request, Response, Unregister, Logger, ILogger, Subscribe, Unsubscribe, Notify, MessageType, Fail, IMethodInfo } from "dwarf-common";
+import { ProtocolManager, Login, Logout, Register, Request, Response, Unregister, Ok, Logger, ILogger, Subscribe, Unsubscribe, Notify, MessageType, Fail, IMethodInfo } from "dwarf-common";
 import { IAccess } from "../interface";
+import { captureRejectionSymbol } from "events";
 
 export class Access implements IAccess {
 
@@ -33,12 +34,23 @@ export class Access implements IAccess {
 
     register(name: string, info: IMethodInfo[], service: any): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.services.set(name, service);
+            const gag = info.reduce(
+                (o: any, method: IMethodInfo) => {
+                    const { name } = method;
+                    if (name) {
+                        const handler = service[method.method ?? name];
+                        if (handler) {
+                            o[name] = handler.bind(service);
+                        }
+                    }
+                    return o;
+                }, Object.create(null));
+            this.services.set(name, gag);
             const reqister = new Register();
             reqister.name = name;
             reqister.info = info;
             const packet = this.protocol.encode(reqister);
-            this.replies.set(reqister.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.replies.set(reqister.id, (m: Ok | Fail) => m instanceof Ok ? resolve() : reject(m.reason));
             this.client?.send(packet);
         });
     }
@@ -49,7 +61,7 @@ export class Access implements IAccess {
             const unreqister = new Unregister();
             unreqister.name = name;
             const packet = this.protocol.encode(unreqister);
-            this.replies.set(unreqister.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.replies.set(unreqister.id, (m: Ok | Fail) => m instanceof Ok ? resolve() : reject(m.reason));
             this.client?.send(packet);
         });
     }
@@ -61,7 +73,7 @@ export class Access implements IAccess {
             request.op = op;
             request.payload = payload;
             const packet = this.protocol.encode(request);
-            this.replies.set(request.id, (m: any) => m.type === MessageType.Response ? resolve(m.payload) : reject());
+            this.replies.set(request.id, (m: Response | Fail) => m instanceof Response ? resolve(m.payload) : reject(m.reason));
             this.client?.send(packet);
         });
     }
@@ -76,7 +88,7 @@ export class Access implements IAccess {
             const subscribe = new Subscribe();
             subscribe.channel = channel;
             const packet = this.protocol.encode(subscribe);
-            this.replies.set(subscribe.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.replies.set(subscribe.id, (m: Ok | Fail) => m instanceof Ok ? resolve() : reject(m.reason));
             this.client?.send(packet);
         });
     }
@@ -91,7 +103,7 @@ export class Access implements IAccess {
             const unsubscribe = new Unsubscribe();
             unsubscribe.channel = channel;
             const packet = this.protocol.encode(unsubscribe);
-            this.replies.set(unsubscribe.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.replies.set(unsubscribe.id, (m: Ok | Fail) => m instanceof Ok ? resolve() : reject(m.reason));
             this.client?.send(packet);
         });
     }
@@ -102,7 +114,7 @@ export class Access implements IAccess {
             notify.channel = channel;
             notify.payload = payload;
             const packet = this.protocol.encode(notify);
-            this.replies.set(notify.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.replies.set(notify.id, (m: Ok | Fail) => m instanceof Ok ? resolve() : reject(m.reason));
             this.client?.send(packet);
         });
     }
@@ -143,7 +155,7 @@ export class Access implements IAccess {
             login.applicationId = this.options.applicationId;
             login.secretKey = this.options.secretKey;
             const packet = this.protocol.encode(login);
-            this.replies.set(login.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.replies.set(login.id, (m: Ok | Fail) => m instanceof Ok ? resolve() : reject(m.reason));
             this.client?.send(packet);
         });
     }
@@ -152,7 +164,7 @@ export class Access implements IAccess {
         return new Promise((resolve, reject) => {
             const logout = new Logout();
             const packet = this.protocol.encode(logout);
-            this.replies.set(logout.id, (m: any) => m.type === MessageType.Ok ? resolve() : reject());
+            this.replies.set(logout.id, (m: Ok | Fail) => m instanceof Ok ? resolve() : reject(m.reason));
             this.client?.send(packet);
         });
     }
