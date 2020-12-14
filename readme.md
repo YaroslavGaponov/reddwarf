@@ -11,6 +11,7 @@ tiny microservice framework
   * [Required](#required)
   * [Start all core components](#start-all-core-components)
   * [Open monitor](#open-monitor)
+  * [REST access](#rest-access)
   * [Stop all core components](#stop-all-core-components)
 * [Core components](#core-components)
   * [Gateway](#gateway)
