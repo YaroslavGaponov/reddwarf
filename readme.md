@@ -5,6 +5,7 @@ tiny microservice framework
 # Sections
 
 * [Overview](#overview)
+* [General schema](#general-schema)
 * [Supported languages](#supported-languages)
 * [Supported message brokers](#supported-message-brokers)
 * [How to try](#how-to-try)
@@ -24,6 +25,10 @@ tiny microservice framework
 # Overview
 
 The goal of this framework is to create a convenient and flexible platform for developing microservices in different languages.
+
+# General schema
+
+![Dwarf](/_resource/dwarf.png)
 
 # Supported languages
 
