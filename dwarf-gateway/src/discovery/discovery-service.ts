@@ -1,8 +1,6 @@
 import { ILogger, Logger, Notify, ProtocolManager, Setting } from "dwarf-common";
 import { Broker } from "../decorator";
-import { INetworkServer } from "../interface";
-import { IBroker } from "../interface/broker.interface";
-import { IRegistry } from "./registry.interface";
+import { INetworkServer, IBroker, IRegistry } from "../interface";
 
 const DISCOVERY_REGISTER = "discovery:register";
 const DISCOVERY_UNREGISTER = "discovery:unregister";
