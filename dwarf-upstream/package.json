@@ -19,6 +19,10 @@
     "dwarf-sdk": "../dwarf-sdk",
     "express": "^4.17.1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:YaroslavGaponov/dwarf.git"
+  },
   "author": "Yaroslav Gaponov",
   "license": "MIT"
 }

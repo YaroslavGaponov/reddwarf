@@ -14,6 +14,10 @@
   "dependencies": {
     "reflect-metadata": "^0.1.13"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:YaroslavGaponov/dwarf.git"
+  },
   "author": "Yaroslav Gaponov",
   "license": "MIT"
 }

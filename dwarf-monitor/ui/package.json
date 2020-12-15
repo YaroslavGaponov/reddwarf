@@ -25,5 +25,11 @@
   },
   "dependencies": {
     "sirv-cli": "^1.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:YaroslavGaponov/dwarf.git"
+  },
+  "author": "Yaroslav Gaponov",
+  "license": "MIT"
 }

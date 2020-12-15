@@ -4,7 +4,7 @@ import { IBroker } from "../interface/broker.interface";
 import { Broker } from "../decorator";
 import { IClient } from "../interface/client.interface";
 import { IncomingMessage } from "http";
-import { GatewayClientError, GatewayError } from "../error";
+import { GatewayClientError } from "../error";
 
 export class Client implements IClient {
 
@@ -19,7 +19,7 @@ export class Client implements IClient {
     private readonly protocol = new ProtocolManager();
 
     private isLoggin = false;
-    private applicationId: string = "unknown";
+    private applicationId: string = "<unknown>";
 
     private readonly services: Set<string> = new Set();
     private readonly channels: Set<string> = new Set();
@@ -60,7 +60,13 @@ export class Client implements IClient {
                         throw new GatewayClientError("Client is not logged in");
                     }
                     this.broker.subscribe(`service:${request.name}`, this.send);
-                    this.broker.broadcast(`discovery:register`, { id: this.id, host: this.request.socket.remoteAddress, applicationId: this.applicationId, name: request.name, info: request.info });
+                    this.broker.broadcast(`discovery:register`, {
+                        id: this.id,
+                        host: this.request.socket.remoteAddress,
+                        applicationId: this.applicationId,
+                        name: request.name,
+                        info: request.info
+                    });
                     this.services.add(request.name);
                     response = new Ok(request.id);
                     break;
@@ -70,7 +76,10 @@ export class Client implements IClient {
                         throw new GatewayClientError("Client is not logged in");
                     }
                     this.broker.unsubscribe(`service:${request.name}`, this.send);
-                    this.broker.broadcast(`discovery:unregister`, { id: this.id, name: request.name });
+                    this.broker.broadcast(`discovery:unregister`, {
+                        id: this.id,
+                        name: request.name
+                    });
                     this.services.delete(request.name);
                     response = new Ok(request.id);
                     break;
@@ -135,11 +144,10 @@ export class Client implements IClient {
             }
 
         } catch (ex) {
+            this.logger.error(ex.toString());
             if (request && request.id) {
                 const response = new Fail(request.id, ex.toString());
                 this.send(this.protocol.encode(response) as Buffer);
-            } else {
-                this.logger.error(ex.toString());
             }
         }
 
@@ -152,9 +160,9 @@ export class Client implements IClient {
             this.broker.unsubscribe(`service:${name}`, this.send);
             this.broker.broadcast(`discovery:unregister`, { id: this.id, name });
         });
-        this.services.clear();
-
         this.channels.forEach((channel: string) => this.broker.unsubscribe(channel, this.send));
+
+        this.services.clear();
         this.channels.clear();
     }
 
