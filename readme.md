@@ -38,10 +38,12 @@ The goal of this framework is to create a convenient and flexible platform for d
   - [Node.js (Javascript)](dwarf-demo-nodejs/readme.md)
   - ...
 
+
 # Supported message brokers
 
   - local
   - ...
+
 
 # How to try
 
@@ -51,19 +53,23 @@ The goal of this framework is to create a convenient and flexible platform for d
  - docker-compose
  - make
 
+
 ## Build core components
 
 ```
 make build
 ```
 
+
 ## Start core components
 
 ```sh
 make start
 ```
-  
+
+
 ![Dwarf start](/_resource/dwarf-start.png)
+
 
 ## Open monitor
 
@@ -75,7 +81,9 @@ or
 make monitor
 ```
 
+
 ![Dwarf monitor](/_resource/dwarf-monitor.png)
+
 
 ## REST access
 
@@ -87,7 +95,9 @@ or
 curl "http://localhost:38082/upstream/dwarf-demo/reverse?str=Hello"
 ```
 
+
 ![Dwarf upstream](/_resource/dwarf-upstream.png)
+
 
 ## Stop core components
 
@@ -95,33 +105,44 @@ curl "http://localhost:38082/upstream/dwarf-demo/reverse?str=Hello"
 make stop
 ```
 
+
 # Core components
 
+
 ## Gateway
+
 
 ### Wherefore
 
   * single entry point
   * simple protocol for accessing different message brokers
 
+
 [Dwarf-gateway](dwarf-gateway/readme.md)
 
+
 ## Monitor
+
 
 ### Wherefore
 
   * сonvenient graphical interface to the system
   * quick health check of microservices
 
+
 [Dwarf-monitor](dwarf-monitor/readme.md)
 
+
 ## Upstream
+
 
 ### Wherefore
 
   * microservices have REST protocol support out of the box
 
+
 [Dwarf-upstream](dwarf-upstream/readme.md)
+
 
 # Welcome
 
