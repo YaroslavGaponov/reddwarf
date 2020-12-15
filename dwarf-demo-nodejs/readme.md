@@ -17,9 +17,8 @@ Examples
 ## Source
 
 ```javascript
-// demo-service.js
-module.exports.name = "dwarf-demo";
-module.exports.info = [
+const NAME = "dwarf-demo";
+const INFO = [
     {
         name: "reverse",
         description: "Reverse string",
@@ -35,28 +34,29 @@ module.exports.info = [
             }
         }]
     }
-]
-module.exports.service = class DemoService {
+];
+
+class DemoService {
 
     constructor(access) {
         this.access = access;
     }
 
-    async reverse(payload) {
+    reverse(payload) {
         return { str: payload.str.split('').reverse().join('') };
     }
 }
 
-// demo-service-run.js
 const options = {
     host: process.env.GATEWAY_HOST || "localhost",
     port: process.env.GATEWAY_PORT || 38080,
     applicationId: "demo-service-nodejs",
     secretKey: "<empty>"
 };
+
 const access = new Access(options);
 await access.connect();
-await access.register(name, info, new service(access));
+await access.register(NAME, INFO, new DemoService(access));
 ```
 
 ## Run
@@ -71,7 +71,6 @@ npm run service
 ## Source
 
 ```javascript
-// demo-client-run.js
 const options = {
     host: process.env.GATEWAY_HOST || "localhost",
     port: process.env.GATEWAY_PORT || 38080,
