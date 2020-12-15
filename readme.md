@@ -10,7 +10,8 @@ tiny microservice framework
 * [Supported message brokers](#supported-message-brokers)
 * [How to try](#how-to-try)
   * [Required](#required)
-  * [Start all core components](#start-all-core-components)
+  * [Build core components](#build-core-components)
+  * [Start core components](#start-core-components)
   * [Open monitor](#open-monitor)
   * [REST access](#rest-access)
   * [Stop all core components](#stop-all-core-components)
@@ -49,7 +50,13 @@ The goal of this framework is to create a convenient and flexible platform for d
  - docker-compose
  - make
 
-## Start all core components
+## Build core components
+
+```
+make build
+```
+
+## Start core components
 
 ```sh
 make start

@@ -21,17 +21,25 @@ export class HttpServer implements INetworkServer {
         this.app.use(bodyParser.json());
 
         this.app.get("/upstream/:name/:method", async (req, res) => {
-            const { name, method } = req.params;
-            this.logger.trace(`request: ${name}.${method}: ${JSON.stringify(req.query)}`);
-            const response = await this.client.request(name as string, method as string, req.query);
-            res.json(response);
+            try {
+                const { name, method } = req.params;
+                this.logger.trace(`request: ${name}.${method}: ${JSON.stringify(req.query)}`);
+                const response = await this.client.request(name as string, method as string, req.query);
+                res.json(response);
+            } catch (ex) {
+                res.status(500).send(ex);
+            }
         });
 
         this.app.post("/upstream/:name/:method", async (req, res) => {
-            const { name, method } = req.params;
-            this.logger.trace(`request: ${name}.${method}: ${JSON.stringify(req.body)}`);
-            const response = await this.client.request(name as string, method as string, req.body);
-            res.json(response);
+            try {
+                const { name, method } = req.params;
+                this.logger.trace(`request: ${name}.${method}: ${JSON.stringify(req.body)}`);
+                const response = await this.client.request(name as string, method as string, req.body);
+                res.json(response);
+            } catch (ex) {
+                res.status(500).send(ex);
+            }
         })
     }
 

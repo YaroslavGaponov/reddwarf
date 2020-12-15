@@ -2,6 +2,7 @@ import { AccessOptions } from "./access-options";
 import WebSocket, { Data } from "ws";
 import { ProtocolManager, Login, Logout, Register, Request, Response, Unregister, Ok, Logger, ILogger, Subscribe, Unsubscribe, Notify, MessageType, Fail, IMethodInfo } from "dwarf-common";
 import { IAccess } from "../interface";
+import { AccessSdkError } from "../error";
 
 export class Access implements IAccess {
 
@@ -177,6 +178,9 @@ export class Access implements IAccess {
         this.logger.debug(`request ${name}.${op}: ${JSON.stringify(payload)}`);
         try {
             const service = this.services.get(name);
+            if (!service[op]) {
+                throw new AccessSdkError(`Service ${name} is not supported method ${op}.`);
+            }
             const result = await service[op](payload);
             const response = new Response(id);
             response.name = name;

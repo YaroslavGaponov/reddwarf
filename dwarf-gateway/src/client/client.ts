@@ -80,7 +80,9 @@ export class Client implements IClient {
                         throw new GatewayClientError("Client is not logged in");
                     }
                     this.broker.subscribe(`response:${request.id}`, this.send);
-                    this.broker.send(`service:${request.name}`, data);
+                    if (!this.broker.send(`service:${request.name}`, data)) {
+                        throw new GatewayClientError(`Service ${request.name} is not found`);
+                    }
                     break;
 
                 case MessageType.Response:
