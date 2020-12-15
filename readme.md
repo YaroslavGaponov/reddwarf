@@ -66,7 +66,7 @@ make start
 
 ## Open monitor
 
-Open http://localhost:38081/
+Open `http://localhost:38081/`
 
 or
 
@@ -77,6 +77,10 @@ make monitor
 ![Dwarf monitor](/_resource/dwarf-monitor.png)
 
 ## REST access
+
+Open `http://localhost:38082/upstream/dwarf-demo/rreverse?str=hello`
+
+or
 
 ```sh
 curl "http://localhost:38082/upstream/dwarf-demo/reverse?str=Hello"
