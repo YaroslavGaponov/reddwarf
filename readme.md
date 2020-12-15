@@ -14,7 +14,7 @@ tiny microservice framework
   * [Start core components](#start-core-components)
   * [Open monitor](#open-monitor)
   * [REST access](#rest-access)
-  * [Stop all core components](#stop-all-core-components)
+  * [Stop core components](#stop-core-components)
 * [Core components](#core-components)
   * [Gateway](#gateway)
     * [Wherefore](#wherefore)
@@ -66,6 +66,10 @@ make start
 
 ## Open monitor
 
+Open http://localhost:38081/
+
+or
+
 ```sh
 make monitor
 ```
@@ -80,7 +84,7 @@ curl "http://localhost:38082/upstream/dwarf-demo/reverse?str=Hello"
 
 ![Dwarf upstream](/_resource/dwarf-upstream.png)
 
-## Stop all core components
+## Stop core components
 
 ```sh
 make stop
