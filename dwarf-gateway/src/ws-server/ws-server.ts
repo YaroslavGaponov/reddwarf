@@ -1,15 +1,22 @@
-import { createServer, IncomingMessage } from "http";
+import { createServer } from "https";
+import { IncomingMessage } from "http";
 import WebSocket, { Data, Server } from "ws";
 import { Client } from "../client";
 import { IClient, INetworkServer } from "../interface";
 import { Logger, ILogger } from "dwarf-common";
+import { readFileSync } from "fs";
+import { resolve, join } from "path";
+
+const CERTIFICATES = resolve(__dirname, "../..", "certificates");
+const KEY = readFileSync(join(CERTIFICATES, "gateway.key"));
+const CERT = readFileSync(join(CERTIFICATES, "gateway.cert"));
 
 export class WSServer implements INetworkServer {
 
     @Logger
     private readonly logger!: ILogger;
 
-    private readonly server = createServer();
+    private readonly server = createServer({ key: KEY, cert: CERT });
     private readonly clients: Set<IClient> = new Set();
 
     constructor(private readonly port: number) {

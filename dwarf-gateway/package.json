@@ -5,6 +5,7 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "tsc",
+    "keys": "openssl req -nodes -new -x509 -keyout certificates/gateway.key -out certificates/gateway.cert",
     "gateway": "node --max-semi-space-size=128 dist/main.js"
   },
   "devDependencies": {

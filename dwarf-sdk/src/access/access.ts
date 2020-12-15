@@ -2,7 +2,6 @@ import { AccessOptions } from "./access-options";
 import WebSocket, { Data } from "ws";
 import { ProtocolManager, Login, Logout, Register, Request, Response, Unregister, Ok, Logger, ILogger, Subscribe, Unsubscribe, Notify, MessageType, Fail, IMethodInfo } from "dwarf-common";
 import { IAccess } from "../interface";
-import { captureRejectionSymbol } from "events";
 
 export class Access implements IAccess {
 
@@ -121,7 +120,7 @@ export class Access implements IAccess {
 
     private open(): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.client = new WebSocket(`ws://${this.options.host}:${this.options.port}/gateway`);
+            this.client = new WebSocket(`wss://${this.options.host}:${this.options.port}`, { rejectUnauthorized: false });
             this.client
                 .once("open", resolve)
                 .once("error", reject)

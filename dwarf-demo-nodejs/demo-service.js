@@ -40,7 +40,7 @@ module.exports.service = class DemoService {
         this.access = access;
     }
 
-    async reverse(payload) {
+    reverse(payload) {
         return { str: payload.str.split('').reverse().join('') };
     }
 

@@ -4,6 +4,7 @@ import { IBroker } from "../interface/broker.interface";
 import { Broker } from "../decorator";
 import { IClient } from "../interface/client.interface";
 import { IncomingMessage } from "http";
+import { GatewayClientError, GatewayError } from "../error";
 
 export class Client implements IClient {
 
@@ -56,8 +57,7 @@ export class Client implements IClient {
 
                 case MessageType.Register:
                     if (!this.isLoggin) {
-                        response = new Fail(request.id, "Client is not logged in");
-                        break;
+                        throw new GatewayClientError("Client is not logged in");
                     }
                     this.broker.subscribe(`service:${request.name}`, this.send);
                     this.broker.broadcast(`discovery:register`, { id: this.id, host: this.request.socket.remoteAddress, applicationId: this.applicationId, name: request.name, info: request.info });
@@ -67,8 +67,7 @@ export class Client implements IClient {
 
                 case MessageType.Unregister:
                     if (!this.isLoggin) {
-                        response = new Fail(request.id, "Client is not logged in");
-                        break;
+                        throw new GatewayClientError("Client is not logged in");
                     }
                     this.broker.unsubscribe(`service:${request.name}`, this.send);
                     this.broker.broadcast(`discovery:unregister`, { id: this.id, name: request.name });
@@ -78,8 +77,7 @@ export class Client implements IClient {
 
                 case MessageType.Request:
                     if (!this.isLoggin) {
-                        response = new Fail(request.id, "Client is not logged in");
-                        break;
+                        throw new GatewayClientError("Client is not logged in");
                     }
                     this.broker.subscribe(`response:${request.id}`, this.send);
                     this.broker.send(`service:${request.name}`, data);
@@ -87,24 +85,21 @@ export class Client implements IClient {
 
                 case MessageType.Response:
                     if (!this.isLoggin) {
-                        response = new Fail(request.id, "Client is not logged in");
-                        break;
+                        throw new GatewayClientError("Client is not logged in");
                     }
                     this.broker.send(`response:${request.id}`, data);
                     break;
 
                 case MessageType.Fail:
                     if (!this.isLoggin) {
-                        response = new Fail(request.id, "Client is not logged in");
-                        break;
+                        throw new GatewayClientError("Client is not logged in");
                     }
                     this.broker.send(`response:${request.id}`, data);
                     break;
 
                 case MessageType.Subscribe:
                     if (!this.isLoggin) {
-                        response = new Fail(request.id, "Client is not logged in");
-                        break;
+                        throw new GatewayClientError("Client is not logged in");
                     }
                     this.broker.subscribe(request.channel, this.send);
                     this.channels.add(request.channel);
@@ -113,8 +108,7 @@ export class Client implements IClient {
 
                 case MessageType.Unsubscribe:
                     if (!this.isLoggin) {
-                        response = new Fail(request.id, "Client is not logged in");
-                        break;
+                        throw new GatewayClientError("Client is not logged in");
                     }
                     this.broker.unsubscribe(request.channel, this.send);
                     this.channels.delete(request.channel);
@@ -123,24 +117,23 @@ export class Client implements IClient {
 
                 case MessageType.Notify:
                     if (!this.isLoggin) {
-                        response = new Fail(request.id, "Client is not logged in");
-                        break;
+                        throw new GatewayClientError("Client is not logged in");
                     }
                     this.broker.broadcast(request.channel, data);
                     response = new Ok(request.id);
                     break;
 
                 default:
-                    response = new Fail(request.id, "Message type is not supported");
-                    break;
+                    throw new GatewayClientError("Message type is not supported");
             }
 
             if (response) {
                 this.logger.trace(`Sent ${JSON.stringify(response)}`);
                 this.send(this.protocol.encode(response) as Buffer);
             }
+
         } catch (ex) {
-            if (request) {
+            if (request && request.id) {
                 const response = new Fail(request.id, ex.toString());
                 this.send(this.protocol.encode(response) as Buffer);
             } else {
