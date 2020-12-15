@@ -20,5 +20,5 @@
     "express": "^4.17.1"
   },
   "author": "Yaroslav Gaponov",
-  "license": "ISC"
+  "license": "MIT"
 }

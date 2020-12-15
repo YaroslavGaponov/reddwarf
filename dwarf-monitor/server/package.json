@@ -20,5 +20,5 @@
     "ws": "^7.4.1"
   },
   "author": "Yaroslav Gaponov",
-  "license": "ISC"
+  "license": "MIT"
 }
