@@ -11,6 +11,7 @@ RUN npm install --prefix dwarf-common
 RUN npx tsc --project dwarf-common
 
 COPY dwarf-gateway/src dwarf-gateway/src
+COPY dwarf-gateway/certificates dwarf-gateway/certificates
 COPY dwarf-gateway/package.json dwarf-gateway/package.json
 COPY dwarf-gateway/tsconfig.json dwarf-gateway/tsconfig.json
 RUN npm install --prefix dwarf-gateway
