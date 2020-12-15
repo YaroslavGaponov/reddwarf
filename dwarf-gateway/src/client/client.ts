@@ -1,8 +1,7 @@
 import WebSocket from "ws";
-import { Login, Logout, Fail, Ok, ProtocolManager, Register, Unregister, ILogger, Logger, MessageType } from "dwarf-common";
-import { IBroker } from "../interface/broker.interface";
+import { Fail, Ok, ProtocolManager, ILogger, Logger, MessageType } from "dwarf-common";
+import { IBroker, IClient } from "../interface";
 import { Broker } from "../decorator";
-import { IClient } from "../interface/client.interface";
 import { IncomingMessage } from "http";
 import { GatewayClientError } from "../error";
 
