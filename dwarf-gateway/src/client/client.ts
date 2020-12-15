@@ -33,110 +33,119 @@ export class Client implements IClient {
     }
 
     onMessage(data: Buffer): void {
+        let request, response;
 
-        const request = this.protocol.decode(data as Buffer);
-        let response = null;
+        try {
+            request = this.protocol.decode(data as Buffer);
 
-        this.logger.trace(`Received ${JSON.stringify(request)}`);
+            this.logger.trace(`Received ${JSON.stringify(request)}`);
 
-        switch (request.type) {
+            switch (request.type) {
 
-            case MessageType.Login:
-                this.isLoggin = true;
-                this.applicationId = request.applicationId;
-                response = new Ok(request.id);
-                break;
-
-            case MessageType.Logout:
-                this.isLoggin = false;
-                this.applicationId = "unknown";
-                response = new Ok(request.id);
-                break;
-
-            case MessageType.Register:
-                if (!this.isLoggin) {
-                    response = new Fail(request.id, "Client is not logged in");
+                case MessageType.Login:
+                    this.isLoggin = true;
+                    this.applicationId = request.applicationId;
+                    response = new Ok(request.id);
                     break;
-                }
-                this.broker.subscribe(`service:${request.name}`, this.send);
-                this.broker.broadcast(`discovery:register`, { id: this.id, host: this.request.socket.remoteAddress, applicationId: this.applicationId, name: request.name, info: request.info });
-                this.services.add(request.name);
-                response = new Ok(request.id);
-                break;
 
-            case MessageType.Unregister:
-                if (!this.isLoggin) {
-                    response = new Fail(request.id, "Client is not logged in");
+                case MessageType.Logout:
+                    this.isLoggin = false;
+                    this.applicationId = "unknown";
+                    response = new Ok(request.id);
                     break;
-                }
-                this.broker.unsubscribe(`service:${request.name}`, this.send);
-                this.broker.broadcast(`discovery:unregister`, { id: this.id, name: request.name });
-                this.services.delete(request.name);
-                response = new Ok(request.id);
-                break;
 
-            case MessageType.Request:
-                if (!this.isLoggin) {
-                    response = new Fail(request.id, "Client is not logged in");
+                case MessageType.Register:
+                    if (!this.isLoggin) {
+                        response = new Fail(request.id, "Client is not logged in");
+                        break;
+                    }
+                    this.broker.subscribe(`service:${request.name}`, this.send);
+                    this.broker.broadcast(`discovery:register`, { id: this.id, host: this.request.socket.remoteAddress, applicationId: this.applicationId, name: request.name, info: request.info });
+                    this.services.add(request.name);
+                    response = new Ok(request.id);
                     break;
-                }
-                this.broker.subscribe(`response:${request.id}`, this.send);
-                this.broker.send(`service:${request.name}`, data);
-                break;
 
-            case MessageType.Response:
-                if (!this.isLoggin) {
-                    response = new Fail(request.id, "Client is not logged in");
+                case MessageType.Unregister:
+                    if (!this.isLoggin) {
+                        response = new Fail(request.id, "Client is not logged in");
+                        break;
+                    }
+                    this.broker.unsubscribe(`service:${request.name}`, this.send);
+                    this.broker.broadcast(`discovery:unregister`, { id: this.id, name: request.name });
+                    this.services.delete(request.name);
+                    response = new Ok(request.id);
                     break;
-                }
-                this.broker.send(`response:${request.id}`, data);
-                break;
 
-            case MessageType.Fail:
-                if (!this.isLoggin) {
-                    response = new Fail(request.id, "Client is not logged in");
+                case MessageType.Request:
+                    if (!this.isLoggin) {
+                        response = new Fail(request.id, "Client is not logged in");
+                        break;
+                    }
+                    this.broker.subscribe(`response:${request.id}`, this.send);
+                    this.broker.send(`service:${request.name}`, data);
                     break;
-                }
-                this.broker.send(`response:${request.id}`, data);
-                break;
 
-            case MessageType.Subscribe:
-                if (!this.isLoggin) {
-                    response = new Fail(request.id, "Client is not logged in");
+                case MessageType.Response:
+                    if (!this.isLoggin) {
+                        response = new Fail(request.id, "Client is not logged in");
+                        break;
+                    }
+                    this.broker.send(`response:${request.id}`, data);
                     break;
-                }
-                this.broker.subscribe(request.channel, this.send);
-                this.channels.add(request.channel);
-                response = new Ok(request.id);
-                break;
 
-            case MessageType.Unsubscribe:
-                if (!this.isLoggin) {
-                    response = new Fail(request.id, "Client is not logged in");
+                case MessageType.Fail:
+                    if (!this.isLoggin) {
+                        response = new Fail(request.id, "Client is not logged in");
+                        break;
+                    }
+                    this.broker.send(`response:${request.id}`, data);
                     break;
-                }
-                this.broker.unsubscribe(request.channel, this.send);
-                this.channels.delete(request.channel);
-                response = new Ok(request.id);
-                break;
 
-            case MessageType.Notify:
-                if (!this.isLoggin) {
-                    response = new Fail(request.id, "Client is not logged in");
+                case MessageType.Subscribe:
+                    if (!this.isLoggin) {
+                        response = new Fail(request.id, "Client is not logged in");
+                        break;
+                    }
+                    this.broker.subscribe(request.channel, this.send);
+                    this.channels.add(request.channel);
+                    response = new Ok(request.id);
                     break;
-                }
-                this.broker.broadcast(request.channel, data);
-                response = new Ok(request.id);
-                break;
 
-            default:
-                response = new Fail(request.id, "Message type is not supported");
-                break;
-        }
+                case MessageType.Unsubscribe:
+                    if (!this.isLoggin) {
+                        response = new Fail(request.id, "Client is not logged in");
+                        break;
+                    }
+                    this.broker.unsubscribe(request.channel, this.send);
+                    this.channels.delete(request.channel);
+                    response = new Ok(request.id);
+                    break;
 
-        if (response) {
-            this.logger.trace(`Sent ${JSON.stringify(response)}`);
-            this.send(this.protocol.encode(response) as Buffer);
+                case MessageType.Notify:
+                    if (!this.isLoggin) {
+                        response = new Fail(request.id, "Client is not logged in");
+                        break;
+                    }
+                    this.broker.broadcast(request.channel, data);
+                    response = new Ok(request.id);
+                    break;
+
+                default:
+                    response = new Fail(request.id, "Message type is not supported");
+                    break;
+            }
+
+            if (response) {
+                this.logger.trace(`Sent ${JSON.stringify(response)}`);
+                this.send(this.protocol.encode(response) as Buffer);
+            }
+        } catch (ex) {
+            if (request) {
+                const response = new Fail(request.id, ex.toString());
+                this.send(this.protocol.encode(response) as Buffer);
+            } else {
+                this.logger.error(ex.toString());
+            }
         }
 
     }
