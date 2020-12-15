@@ -2,7 +2,7 @@ import { Client, IAccess } from "dwarf-sdk";
 
 export class DemoClient {
 
-    @Client("demo-client", "secret")
+    @Client("demo-client", "<empty>")
     private readonly client!: IAccess;
 
     async connect() {

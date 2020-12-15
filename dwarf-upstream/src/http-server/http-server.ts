@@ -12,7 +12,7 @@ export class HttpServer implements INetworkServer {
     private readonly port!: number;
 
 
-    @Client("upstream", "secret")
+    @Client("upstream", "<empty>")
     private readonly client!: IAccess;
 
     private readonly app = express();

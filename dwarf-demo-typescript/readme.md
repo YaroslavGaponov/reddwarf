@@ -66,7 +66,7 @@ npm run service
 // demo-client.ts
 export class DemoClient {
 
-    @Client("demo-client", "secret")
+    @Client("demo-client", "<empty>")
     private readonly client!: IAccess;
 
     async connect() {
