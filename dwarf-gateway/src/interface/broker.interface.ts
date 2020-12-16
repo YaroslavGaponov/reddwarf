@@ -1,8 +1,12 @@
+export enum ChannelType {
+    "queue",
+    "topic"
+}
+
 export interface IBroker {
     connect(): Promise<void>;
     disconnect(): Promise<void>;
-    subscribe(name: string, handler: Function): boolean;
-    unsubscribe(name: string, handler: Function): boolean;
-    send(name: string, payload: any): boolean;
-    broadcast(name: string, payload: any): boolean;
+    subscribe(type: ChannelType, name: string, handler: Function): boolean;
+    unsubscribe(type: ChannelType, name: string, handler: Function): boolean;
+    send(type: ChannelType, name: string, payload: any): boolean;
 }

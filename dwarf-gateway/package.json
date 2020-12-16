@@ -11,12 +11,14 @@
   "devDependencies": {
     "@types/ws": "^7.4.0",
     "@types/node": "^13.1.8",
+    "@types/redis": "^2.8.28",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "reflect-metadata": "^0.1.13",
     "dwarf-common": "../dwarf-common",
+    "redis": "^3.0.2",
+    "reflect-metadata": "^0.1.13",
     "ws": "^7.4.0"
   },
   "repository": {

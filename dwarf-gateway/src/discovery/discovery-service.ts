@@ -1,6 +1,6 @@
 import { ILogger, Logger, Notify, ProtocolManager, Setting } from "dwarf-common";
 import { Broker } from "../decorator";
-import { INetworkServer, IBroker, IRegistry } from "../interface";
+import { INetworkServer, IBroker, IRegistry, ChannelType } from "../interface";
 
 const DISCOVERY_REGISTER = "discovery:register";
 const DISCOVERY_UNREGISTER = "discovery:unregister";
@@ -30,18 +30,18 @@ export class DiscoveryService implements INetworkServer {
 
     async start(): Promise<void> {
         this.logger.info("Discovery service is starting 👍");
-        this.broker.subscribe(DISCOVERY_REGISTER, this.register);
-        this.broker.subscribe(DISCOVERY_UNREGISTER, this.unregister);
-        this.broker.subscribe(DISCOVERY_UPDATE, this.setAnAlarm);
+        this.broker.subscribe(ChannelType.topic, DISCOVERY_REGISTER, this.register);
+        this.broker.subscribe(ChannelType.topic, DISCOVERY_UNREGISTER, this.unregister);
+        this.broker.subscribe(ChannelType.topic, DISCOVERY_UPDATE, this.setAnAlarm);
         this.setAnAlarm();
     }
 
     async stop(): Promise<void> {
         this.logger.info("Discovery service is stopping 👎");
         clearInterval(this.timerId);
-        this.broker.unsubscribe(DISCOVERY_REGISTER, this.register);
-        this.broker.unsubscribe(DISCOVERY_UNREGISTER, this.unregister);
-        this.broker.unsubscribe(DISCOVERY_UPDATE, this.setAnAlarm);
+        this.broker.unsubscribe(ChannelType.topic, DISCOVERY_REGISTER, this.register);
+        this.broker.unsubscribe(ChannelType.topic, DISCOVERY_UNREGISTER, this.unregister);
+        this.broker.unsubscribe(ChannelType.topic, DISCOVERY_UPDATE, this.setAnAlarm);
     }
 
     private setAnAlarm() {
@@ -54,7 +54,7 @@ export class DiscoveryService implements INetworkServer {
         notify.channel = DISCOVERY_UPDATE;
         notify.payload = this.registry;
         const packet = this.protocol.encode(notify);
-        this.broker.broadcast(DISCOVERY_UPDATE, packet);
+        this.broker.send(ChannelType.topic, DISCOVERY_UPDATE, packet);
     }
 
     private register(o: any) {

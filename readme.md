@@ -10,8 +10,9 @@ tiny microservice framework
 * [Supported message brokers](#supported-message-brokers)
 * [How to try](#how-to-try)
   * [Required](#required)
-  * [Build core components](#build-core-components)
   * [Start core components](#start-core-components)
+    * [With local broker](#with-local-broker)
+    * [With redis broker](#with-redis-broker)
   * [Open monitor](#open-monitor)
   * [REST access](#rest-access)
   * [Stop core components](#stop-core-components)
@@ -42,6 +43,7 @@ The goal of this framework is to create a convenient and flexible platform for d
 # Supported message brokers
 
   - local
+  - redis
   - ...
 
 
@@ -54,17 +56,18 @@ The goal of this framework is to create a convenient and flexible platform for d
  - make
 
 
-## Build core components
-
-```
-make build
-```
-
-
 ## Start core components
+
+## With local broker
 
 ```sh
 make start
+```
+
+## With redis broker
+
+```sh
+make start-redis
 ```
 
 
@@ -105,6 +108,11 @@ curl "http://localhost:38082/upstream/dwarf-demo/reverse?str=Hello"
 make stop
 ```
 
+or
+
+```sh
+make stop-redis
+```
 
 # Core components
 

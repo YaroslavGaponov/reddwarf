@@ -1,6 +1,6 @@
 import WebSocket from "ws";
 import { Fail, Ok, ProtocolManager, ILogger, Logger, MessageType } from "dwarf-common";
-import { IBroker, IClient } from "../interface";
+import { IBroker, IClient, ChannelType } from "../interface";
 import { Broker } from "../decorator";
 import { IncomingMessage } from "http";
 import { GatewayClientError } from "../error";
@@ -58,8 +58,8 @@ export class Client implements IClient {
                     if (!this.isLoggin) {
                         throw new GatewayClientError("Client is not logged in");
                     }
-                    this.broker.subscribe(`service:${request.name}`, this.send);
-                    this.broker.broadcast(`discovery:register`, {
+                    this.broker.subscribe(ChannelType.queue, `service:${request.name}`, this.send);
+                    this.broker.send(ChannelType.topic, `discovery:register`, {
                         id: this.id,
                         host: this.request.socket.remoteAddress,
                         applicationId: this.applicationId,
@@ -74,8 +74,8 @@ export class Client implements IClient {
                     if (!this.isLoggin) {
                         throw new GatewayClientError("Client is not logged in");
                     }
-                    this.broker.unsubscribe(`service:${request.name}`, this.send);
-                    this.broker.broadcast(`discovery:unregister`, {
+                    this.broker.unsubscribe(ChannelType.queue, `service:${request.name}`, this.send);
+                    this.broker.send(ChannelType.topic, `discovery:unregister`, {
                         id: this.id,
                         name: request.name
                     });
@@ -87,8 +87,8 @@ export class Client implements IClient {
                     if (!this.isLoggin) {
                         throw new GatewayClientError("Client is not logged in");
                     }
-                    this.broker.subscribe(`response:${request.id}`, this.send);
-                    if (!this.broker.send(`service:${request.name}`, data)) {
+                    this.broker.subscribe(ChannelType.queue, `response:${request.id}`, this.send);
+                    if (!this.broker.send(ChannelType.queue, `service:${request.name}`, data)) {
                         throw new GatewayClientError(`Service ${request.name} is not found`);
                     }
                     break;
@@ -97,21 +97,21 @@ export class Client implements IClient {
                     if (!this.isLoggin) {
                         throw new GatewayClientError("Client is not logged in");
                     }
-                    this.broker.send(`response:${request.id}`, data);
+                    this.broker.send(ChannelType.queue, `response:${request.id}`, data);
                     break;
 
                 case MessageType.Fail:
                     if (!this.isLoggin) {
                         throw new GatewayClientError("Client is not logged in");
                     }
-                    this.broker.send(`response:${request.id}`, data);
+                    this.broker.send(ChannelType.queue, `response:${request.id}`, data);
                     break;
 
                 case MessageType.Subscribe:
                     if (!this.isLoggin) {
                         throw new GatewayClientError("Client is not logged in");
                     }
-                    this.broker.subscribe(request.channel, this.send);
+                    this.broker.subscribe(ChannelType.topic, request.channel, this.send);
                     this.channels.add(request.channel);
                     response = new Ok(request.id);
                     break;
@@ -120,7 +120,7 @@ export class Client implements IClient {
                     if (!this.isLoggin) {
                         throw new GatewayClientError("Client is not logged in");
                     }
-                    this.broker.unsubscribe(request.channel, this.send);
+                    this.broker.unsubscribe(ChannelType.topic, request.channel, this.send);
                     this.channels.delete(request.channel);
                     response = new Ok(request.id);
                     break;
@@ -129,7 +129,7 @@ export class Client implements IClient {
                     if (!this.isLoggin) {
                         throw new GatewayClientError("Client is not logged in");
                     }
-                    this.broker.broadcast(request.channel, data);
+                    this.broker.send(ChannelType.topic, request.channel, data);
                     response = new Ok(request.id);
                     break;
 
@@ -156,10 +156,10 @@ export class Client implements IClient {
         this.logger.debug(`Client ${this.id} is disconnected`);
 
         this.services.forEach((name: string) => {
-            this.broker.unsubscribe(`service:${name}`, this.send);
-            this.broker.broadcast(`discovery:unregister`, { id: this.id, name });
+            this.broker.unsubscribe(ChannelType.queue, `service:${name}`, this.send);
+            this.broker.send(ChannelType.topic, `discovery:unregister`, { id: this.id, name });
         });
-        this.channels.forEach((channel: string) => this.broker.unsubscribe(channel, this.send));
+        this.channels.forEach((channel: string) => this.broker.unsubscribe(ChannelType.topic, channel, this.send));
 
         this.services.clear();
         this.channels.clear();

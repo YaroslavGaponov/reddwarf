@@ -1,16 +1,25 @@
 services:
 
+  redis:
+    image: 'bitnami/redis:latest'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
   dwarf-gateway:
     build:
       context: .
       dockerfile: ./dockerfile.gateway
+    links:
+      - redis
     expose: 
       - 38080
     ports:
       - "38080:38080"
     environment: 
       - PORT=38080
-      - BROKER_TYPE=local
+      - BROKER_TYPE=redis
+      - BROKER_HOST=redis
+      - BROKER_PORT=6379
 
   dwarf-upstream:
     build: 
