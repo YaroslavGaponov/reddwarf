@@ -1,0 +1,20 @@
+{
+  "name": "red-dwarf-demo-nodejs",
+  "version": "0.0.1",
+  "description": "Red Dwarf demo node.js",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo skip",
+    "service": "node ./demo-service-run",
+    "client": "node ./demo-client-run"
+  },
+  "dependencies": {
+    "red-dwarf-sdk": "^0.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:YaroslavGaponov/reddwarf.git"
+  },
+  "author": "Yaroslav Gaponov",
+  "license": "MIT"
+}

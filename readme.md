@@ -35,8 +35,8 @@ The goal of this framework is to create a convenient and flexible platform for d
 
 # Supported languages
 
-  - [Example Node.js (Typescript)](dwarf-demo-typescript/readme.md)
-  - [Example Node.js (Javascript)](dwarf-demo-nodejs/readme.md)
+  - [Example Node.js (Typescript)](packages/demo-typescript/readme.md)
+  - [Example Node.js (Javascript)](packages/demo-nodejs/readme.md)
   - ...
 
 
@@ -61,17 +61,19 @@ The goal of this framework is to create a convenient and flexible platform for d
 ## With local broker
 
 ```sh
+make build
 make start
 ```
 
 ## With redis broker
 
 ```sh
+make build-redis
 make start-redis
 ```
 
 
-![Dwarf start](/_resource/dwarf-start.png)
+![Dwarf start](/images/dwarf-start.png)
 
 
 ## Open monitor
@@ -85,7 +87,7 @@ make monitor
 ```
 
 
-![Dwarf monitor](/_resource/dwarf-monitor.png)
+![Dwarf monitor](/images/dwarf-monitor.png)
 
 
 ## REST access
@@ -99,7 +101,7 @@ curl "http://localhost:38082/upstream/dwarf-demo/reverse?str=Hello"
 ```
 
 
-![Dwarf upstream](/_resource/dwarf-upstream.png)
+![Dwarf upstream](/images/dwarf-upstream.png)
 
 
 ## Stop core components
@@ -126,7 +128,7 @@ make stop-redis
   * simple protocol for accessing different message brokers
 
 
-[Dwarf-gateway](dwarf-gateway/readme.md)
+[Dwarf-gateway](packages/gateway/readme.md)
 
 
 ## Monitor
@@ -138,7 +140,7 @@ make stop-redis
   * quick health check of microservices
 
 
-[Dwarf-monitor](dwarf-monitor/readme.md)
+[Dwarf-monitor](packages/monitor/readme.md)
 
 
 ## Upstream
@@ -149,7 +151,7 @@ make stop-redis
   * microservices have REST protocol support out of the box
 
 
-[Dwarf-upstream](dwarf-upstream/readme.md)
+[Dwarf-upstream](packages/upstream/readme.md)
 
 
 # Welcome

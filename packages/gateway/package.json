@@ -1,0 +1,30 @@
+{
+  "name": "red-dwarf-gateway",
+  "version": "0.0.1",
+  "description": "Red Dwarf gateway",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "npx tsc",
+    "keys": "openssl req -nodes -new -x509 -keyout certificates/gateway.key -out certificates/gateway.cert",
+    "gateway": "node --max-semi-space-size=128 dist/main.js"
+  },
+  "devDependencies": {
+    "@types/ws": "^7.4.0",
+    "@types/node": "^13.1.8",
+    "@types/redis": "^2.8.28",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "red-dwarf-common": "^0.0.1",
+    "redis": "^3.0.2",
+    "reflect-metadata": "^0.1.13",
+    "ws": "^7.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:YaroslavGaponov/reddwarf.git"
+  },
+  "author": "Yaroslav Gaponov",
+  "license": "MIT"
+}

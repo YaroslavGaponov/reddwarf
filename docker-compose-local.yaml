@@ -1,9 +1,9 @@
 services:
 
-  dwarf-gateway:
+  gateway:
     build:
       context: .
-      dockerfile: ./dockerfile.gateway
+      dockerfile: packages/gateway/Dockerfile
     expose: 
       - 38080
     ports:
@@ -12,51 +12,50 @@ services:
       - PORT=38080
       - BROKER_TYPE=local
 
-
-  dwarf-upstream:
+  upstream:
     build: 
       context: .
-      dockerfile: ./dockerfile.upstream
+      dockerfile: packages/upstream/Dockerfile
     links:
-      - dwarf-gateway
+      - gateway
     environment: 
-      - GATEWAY_HOST=dwarf-gateway
+      - GATEWAY_HOST=gateway
       - GATEWAY_PORT=38080
     expose: 
       - 8082
     ports:
       - "38082:38082"
 
-  dwarf-monitor:
+  monitor:
     build: 
       context: .
-      dockerfile: ./dockerfile.monitor
+      dockerfile: packages/monitor/Dockerfile
     links:
-      - dwarf-gateway
+      - gateway
     environment: 
-      - GATEWAY_HOST=dwarf-gateway
+      - GATEWAY_HOST=gateway
       - GATEWAY_PORT=38080
     expose: 
       - 8081
     ports:
       - "38081:38081"
 
-  dwarf-demo-typescript:
+  demo-typescript:
     build: 
       context: .
-      dockerfile: ./dockerfile.demo-typescript
+      dockerfile: packages/demo-typescript/Dockerfile
     links:
-      - dwarf-gateway
+      - gateway
     environment: 
-      - GATEWAY_HOST=dwarf-gateway
+      - GATEWAY_HOST=gateway
       - GATEWAY_PORT=38080
 
-  dwarf-demo-nodejs:
+  demo-nodejs:
     build: 
       context: .
-      dockerfile: ./dockerfile.demo-nodejs
+      dockerfile: packages/demo-nodejs/Dockerfile
     links:
-      - dwarf-gateway
+      - gateway
     environment: 
-      - GATEWAY_HOST=dwarf-gateway
+      - GATEWAY_HOST=gateway
       - GATEWAY_PORT=38080

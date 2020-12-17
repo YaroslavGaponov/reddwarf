@@ -1,0 +1,26 @@
+{
+  "name": "red-dwarf-sdk",
+  "version": "0.0.1",
+  "description": "Red Dwarf sdk",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npx tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^13.1.8",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5",
+    "@types/ws": "^7.4.0"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13",
+    "red-dwarf-common": "^0.0.1",
+    "ws": "^7.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:YaroslavGaponov/reddwarf.git"
+  },
+  "author": "Yaroslav Gaponov",
+  "license": "MIT"
+}

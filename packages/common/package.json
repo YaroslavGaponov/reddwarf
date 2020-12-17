@@ -1,0 +1,23 @@
+{
+  "name": "red-dwarf-common",
+  "version": "0.0.1",
+  "description": "Red dwarf common",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npx tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^13.1.8",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:YaroslavGaponov/reddwarf.git"
+  },
+  "author": "Yaroslav Gaponov",
+  "license": "MIT"
+}

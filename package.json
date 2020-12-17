@@ -1,0 +1,14 @@
+{
+  "name": "root",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^3.22.1"
+  },
+  "scripts": {
+    "gateway": "node --max-semi-space-size=128 packages/gateway/dist/main.js",
+    "demo-nodejs": "node packages/demo-nodejs/demo-service-run.js",
+    "demo-typescript": "node packages/demo-typescript/dist/demo-service-run.js",
+    "upstream": "node packages/upstream/dist/main.js",
+    "monitor": "node packages/monitor/dist/main.js"
+  }
+}

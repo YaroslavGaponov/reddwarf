@@ -1,19 +1,26 @@
 
+build: build-local
 
 start: start-local
+	
+build-local:
+	docker-compose -f docker-compose-local.yaml build
 
-start-local:
-	docker-compose -f docker-compose-local.yaml up --build
+start-local: 
+	docker-compose -f docker-compose-local.yaml up
 
 stop: stop-local
 
-stop-local:
+stop-local: 
 	docker-compose  -f docker-compose-local.yaml down
 
-start-redis:
-	docker-compose -f docker-compose-redis.yaml up  --build
+build-redis:
+	docker-compose -f docker-compose-redis.yaml build
 
-stop-redis:
+start-redis: 
+	docker-compose -f docker-compose-redis.yaml up
+
+stop-redis: 
 	docker-compose -f docker-compose-redis.yaml down
 
 monitor:

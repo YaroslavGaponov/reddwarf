@@ -1,0 +1,26 @@
+{
+  "name": "red-dwarf-demo-typescript",
+  "version": "0.0.1",
+  "description": "Red Dwarf demo typescript",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "service": "node ./dist/demo-service-run",
+    "client": "node ./dist/demo-client-run"
+  },
+  "devDependencies": {
+    "@types/node": "^13.1.8",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5",
+    "@types/ws": "^7.4.0"
+  },
+  "dependencies": {
+    "red-dwarf-sdk": "^0.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:YaroslavGaponov/reddwarf.git"
+  },
+  "author": "Yaroslav Gaponov",
+  "license": "MIT"
+}
