@@ -1,6 +1,6 @@
 Dwarf
 ========
-tiny microservice framework
+microservice framework
 
 # Sections
 
