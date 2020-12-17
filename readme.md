@@ -31,7 +31,7 @@ The goal of this framework is to create a convenient and flexible platform for d
 
 # General schema
 
-![Dwarf](/_resource/dwarf.png)
+![Dwarf](images/dwarf.png)
 
 # Supported languages
 
