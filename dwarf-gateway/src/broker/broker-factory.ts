@@ -1,4 +1,5 @@
 import { ILogger, Logger, Setting } from "dwarf-common";
+import { GatewayGeneralError } from "../error";
 import { IBroker } from "../interface/broker.interface";
 import { LocalBroker } from "./local";
 import { RedisBroker } from "./redis";
@@ -31,10 +32,10 @@ export class BrokerFactory {
                     BrokerFactory.instance = new RedisBroker(redisBrokerOptions);
                     break;
                 case "local":
-                default:
-                    BrokerFactory.type = "local";
                     BrokerFactory.instance = new LocalBroker();
                     break;
+                default:
+                    throw new GatewayGeneralError(`Gateway is not support broker ${BrokerFactory.type}`);
             }
             BrokerFactory.logger.info(`Broker ${BrokerFactory.type} is starting...`);
             BrokerFactory.instance.connect();

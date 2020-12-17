@@ -25,15 +25,13 @@ export class DiscoveryService implements INetworkServer {
         this.register = this.register.bind(this);
         this.unregister = this.unregister.bind(this);
         this.notify = this.notify.bind(this);
-        this.setAnAlarm = this.setAnAlarm.bind(this);
     }
 
     async start(): Promise<void> {
         this.logger.info("Discovery service is starting 👍");
         this.broker.subscribe(ChannelType.topic, DISCOVERY_REGISTER, this.register);
         this.broker.subscribe(ChannelType.topic, DISCOVERY_UNREGISTER, this.unregister);
-        this.broker.subscribe(ChannelType.topic, DISCOVERY_UPDATE, this.setAnAlarm);
-        setTimeout(this.setAnAlarm, this.interval);
+        this.timerId = setInterval(this.notify, this.interval);
     }
 
     async stop(): Promise<void> {
@@ -41,12 +39,6 @@ export class DiscoveryService implements INetworkServer {
         clearInterval(this.timerId);
         this.broker.unsubscribe(ChannelType.topic, DISCOVERY_REGISTER, this.register);
         this.broker.unsubscribe(ChannelType.topic, DISCOVERY_UNREGISTER, this.unregister);
-        this.broker.unsubscribe(ChannelType.topic, DISCOVERY_UPDATE, this.setAnAlarm);
-    }
-
-    private setAnAlarm() {
-        clearTimeout(this.timerId);
-        this.timerId = setTimeout(this.notify, this.interval);
     }
 
     private notify() {
