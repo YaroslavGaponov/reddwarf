@@ -57,6 +57,7 @@
                 <div class="div-table-col">#</div>
                 <div class="div-table-col">Id</div>
                 <div class="div-table-col">Application Id</div>
+                <div class="div-table-col">Gateway</div>
                 <div class="div-table-col">Host</div>
             </div>
             {#each Object.entries(info.access) as [id, info], i}
@@ -64,6 +65,7 @@
                     <div class="div-table-col">{i + 1}</div>
                     <div class="div-table-col">{id}</div>
                     <div class="div-table-col">{info.applicationId}</div>
+                    <div class="div-table-col">{info.gateway}</div>
                     <div class="div-table-col">{info.host}</div>
                 </div>
             {/each}

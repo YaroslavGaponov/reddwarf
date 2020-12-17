@@ -1,3 +1,4 @@
+import { hostname } from "os";
 import WebSocket from "ws";
 import { Fail, Ok, ProtocolManager, ILogger, Logger, MessageType } from "dwarf-common";
 import { IBroker, IClient, ChannelType } from "../interface";
@@ -62,6 +63,7 @@ export class Client implements IClient {
                     this.broker.send(ChannelType.topic, `discovery:register`, {
                         id: this.id,
                         host: this.request.socket.remoteAddress,
+                        gateway: hostname(),
                         applicationId: this.applicationId,
                         name: request.name,
                         info: request.info

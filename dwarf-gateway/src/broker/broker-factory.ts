@@ -18,7 +18,7 @@ export class BrokerFactory {
     @Setting("BROKER_PORT", 6379)
     static port: number;
 
-    @Setting("BROKER_PASS", "")
+    @Setting("BROKER_PASS", "<empty>")
     static password: string;
 
     static instance: IBroker;
@@ -27,7 +27,7 @@ export class BrokerFactory {
         if (!BrokerFactory.instance) {
             switch (BrokerFactory.type) {
                 case "redis":
-                    const redisBrokerOptions = { host: BrokerFactory.host, port: BrokerFactory.port, password: BrokerFactory.password };
+                    const redisBrokerOptions = { host: BrokerFactory.host, port: BrokerFactory.port, password: BrokerFactory.password === "<empty>" ? undefined : BrokerFactory.password };
                     BrokerFactory.instance = new RedisBroker(redisBrokerOptions);
                     break;
                 case "local":

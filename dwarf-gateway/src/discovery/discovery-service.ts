@@ -19,7 +19,7 @@ export class DiscoveryService implements INetworkServer {
 
     private readonly protocol = new ProtocolManager();
     private timerId!: NodeJS.Timeout;
-    private readonly registry: IRegistry = {};
+    private registry: IRegistry = {};
 
     constructor() {
         this.register = this.register.bind(this);
@@ -33,7 +33,7 @@ export class DiscoveryService implements INetworkServer {
         this.broker.subscribe(ChannelType.topic, DISCOVERY_REGISTER, this.register);
         this.broker.subscribe(ChannelType.topic, DISCOVERY_UNREGISTER, this.unregister);
         this.broker.subscribe(ChannelType.topic, DISCOVERY_UPDATE, this.setAnAlarm);
-        this.setAnAlarm();
+        setTimeout(this.setAnAlarm, this.interval);
     }
 
     async stop(): Promise<void> {
@@ -58,14 +58,14 @@ export class DiscoveryService implements INetworkServer {
     }
 
     private register(o: any) {
-        const { id, applicationId, name, host, info } = o;
+        const { id, applicationId, name, host, gateway, info } = o;
         if (this.registry[name]) {
-            this.registry[name].access[id] = { applicationId, host };
+            this.registry[name].access[id] = { applicationId, host, gateway };
         } else {
             this.registry[name] = {
                 info,
                 access: {
-                    [id]: { applicationId, host }
+                    [id]: { applicationId, host, gateway }
                 }
             }
         }

@@ -2,6 +2,7 @@ import { IMethodInfo } from "dwarf-common";
 
 export interface IAccessInfo {
     applicationId: string;
+    gateway: string;
     host: string;
 }
 

@@ -1,8 +1,12 @@
 import { ChannelType, IBroker } from "../../interface";
 import Redis, { RedisClient } from "redis";
 import { RedisBrokerOptions } from "./redis-broker-options";
+import { ILogger, Logger } from "dwarf-common";
 
 export class RedisBroker implements IBroker {
+
+    @Logger
+    private readonly logger!: ILogger;
 
     private subscriber!: RedisClient;
     private publisher!: RedisClient;
@@ -72,6 +76,15 @@ export class RedisBroker implements IBroker {
     }
 
     send(type: ChannelType, name: string, payload: any): boolean {
+        if (type === ChannelType.queue) {
+            const handlers = this.queue.get(name);
+            if (handlers && handlers.size > 0) {
+                this.logger.debug(`For queue ${name} found local handler`);
+                const handler = [...handlers][Math.floor(Math.random() * handlers.size)];
+                handler(payload);
+                return true;
+            }
+        }
         return this.publisher?.publish(`${ChannelType[type]}:${name}`, JSON.stringify(payload));
     }
 }

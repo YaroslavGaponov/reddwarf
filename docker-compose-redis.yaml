@@ -21,6 +21,22 @@ services:
       - BROKER_HOST=redis
       - BROKER_PORT=6379
 
+  dwarf-gateway2:
+    build:
+      context: .
+      dockerfile: ./dockerfile.gateway
+    links:
+      - redis
+    expose: 
+      - 48080
+    ports:
+      - "48080:48080"
+    environment: 
+      - PORT=48080
+      - BROKER_TYPE=redis
+      - BROKER_HOST=redis
+      - BROKER_PORT=6379
+
   dwarf-upstream:
     build: 
       context: .
@@ -64,7 +80,7 @@ services:
       context: .
       dockerfile: ./dockerfile.demo-nodejs
     links:
-      - dwarf-gateway
+      - dwarf-gateway2
     environment: 
-      - GATEWAY_HOST=dwarf-gateway
-      - GATEWAY_PORT=38080
+      - GATEWAY_HOST=dwarf-gateway2
+      - GATEWAY_PORT=48080
