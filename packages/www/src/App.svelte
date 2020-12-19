@@ -10,22 +10,13 @@
 </script>
 
 <style>
-	p {
-		color: rgb(10, 10, 10);
-		font-family: "Comic Sans MS", cursive;
-		font-size: 2em;
-	}
 </style>
 
 <div>
 	<div>
-		{#await registry}
-			<p>...waiting</p>
-		{:then registry}
-			<h1>Services</h1>
-			{#each Object.entries(registry) as [name, info], no}
-				<Service {no} {name} {info} />
-			{/each}
-		{/await}
+		<h1>Services</h1>
+		{#each Object.entries(registry) as [name, info], no}
+			<Service {no} {name} {info} />
+		{/each}
 	</div>
 </div>

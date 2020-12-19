@@ -1,6 +1,6 @@
 import { hostname } from "os";
 import WebSocket from "ws";
-import { Fail, Ok, ProtocolManager, ILogger, Logger, MessageType } from "red-dwarf-common";
+import { Fail, Ok, ProtocolManager, ILogger, Logger, MessageType, Notify } from "red-dwarf-common";
 import { IBroker, IClient, ChannelType } from "../interface";
 import { Broker } from "../decorator";
 import { IncomingMessage } from "http";
@@ -133,6 +133,16 @@ export class Client implements IClient {
                     }
                     this.broker.send(ChannelType.topic, request.channel, data);
                     response = new Ok(request.id);
+                    break;
+
+                case MessageType.Metrics:
+                    if (!this.isLoggin) {
+                        throw new GatewayClientError("Client is not logged in");
+                    }
+                    const n = new Notify();
+                    n.channel=`metrics:${this.id}`;
+                    n.payload= request;
+                    this.broker.send(ChannelType.topic, n.channel, this.protocol.encode(n));
                     break;
 
                 default:

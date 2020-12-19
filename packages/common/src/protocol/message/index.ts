@@ -9,3 +9,4 @@ export * from "./response";
 export * from "./subscribe";
 export * from "./unsubscribe";
 export * from "./notify";
+export * from "./metrics";

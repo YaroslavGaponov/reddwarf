@@ -1,5 +1,5 @@
 
-import { Auth, Service, Logger, ILogger, Method, Client, IAccess } from "red-dwarf-sdk";
+import { Auth, Service, Logger, ILogger, Method, Client, IAccess, Counter, ICounter } from "red-dwarf-sdk";
 import { ReverseInput, ReverseOutput } from "./payload";
 
 @Service("dwarf-demo")
@@ -11,6 +11,12 @@ export class DemoService {
 
     @Client("demo-service-typescript", "<empty>")
     private readonly client!: IAccess;
+
+    @Counter("reverse_counter", "total calls for reverse method")
+    private readonly reverse_counter!: ICounter;
+
+    @Counter("rreverse_counter", "total calls for rreverse method")
+    private readonly rreverse_counter!: ICounter;
 
     @Method({
         name: "reverse",
@@ -29,6 +35,8 @@ export class DemoService {
     })
     async reverse(payload: ReverseInput): Promise<ReverseOutput> {
         this.logger.debug("reverse method is called");
+        this.reverse_counter.inc();
+
         return { str: payload.str.split('').reverse().join('') };
     }
 
@@ -50,6 +58,8 @@ export class DemoService {
     })
     async rreverse(payload: ReverseInput): Promise<ReverseOutput> {
         this.logger.debug("rreverse method is called");
+        this.rreverse_counter.inc();
+
         const result = await this.client.request("dwarf-demo", "reverse", payload);
         const result2 = await this.client.request("dwarf-demo", "reverse", result);
         return result2;

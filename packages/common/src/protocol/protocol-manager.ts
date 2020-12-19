@@ -1,5 +1,5 @@
 import { Protocol } from "./protocol/protocol";
-import { Fail, Login, Logout, Notify, Ok, Register, Subscribe, Unregister, Unsubscribe, Request, Response } from "./message";
+import { Fail, Login, Logout, Notify, Ok, Register, Subscribe, Unregister, Unsubscribe, Request, Response, Metrics } from "./message";
 import { getMessageType } from "./decorator";
 import { MessageType } from "./type";
 import { ProtocolEncodeError } from "./error";
@@ -20,6 +20,7 @@ export class ProtocolManager {
             .addMessage(Subscribe)
             .addMessage(Unsubscribe)
             .addMessage(Notify)
+            .addMessage(Metrics)
             ;
     }
 

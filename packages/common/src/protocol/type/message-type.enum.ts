@@ -10,5 +10,6 @@ export enum MessageType {
     "Unsubscribe" = 8,
     "Notify" = 9,
     "Request" = 10,
-    "Response" = 11
+    "Response" = 11,
+    "Metrics" = 12
 }

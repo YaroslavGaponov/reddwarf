@@ -12,6 +12,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
+    "prom-client": "^13.0.0",
     "reflect-metadata": "^0.1.13"
   },
   "repository": {

@@ -3,6 +3,7 @@ import { INetworkServer } from "../interface";
 import { Client, IAccess, ILogger, Logger, Setting } from "red-dwarf-sdk";
 import WebSocket, { Server as WSServer } from "ws";
 import { createServer, Server as HTTPServer } from "http";
+const Eyebeam = require("eyebeam");
 
 
 export class HttpServer implements INetworkServer {
@@ -22,6 +23,7 @@ export class HttpServer implements INetworkServer {
     private readonly wss: WSServer;
 
     private readonly clients: Set<WebSocket> = new Set();
+    private readonly metrics: Map<string, string> = new Map();
 
     constructor(www: string) {
 
@@ -32,13 +34,28 @@ export class HttpServer implements INetworkServer {
             client.once("close", () => this.clients.delete(client));
         });
 
-
+        // request/response
         this.app.get("/request", async (req, res) => {
             const response = await this.client.request(req.query.name as string, req.query.method as string, JSON.parse(req.query.payload as string));
             res.json(response);
         });
 
+        // static www
         this.app.use("/", express.static(www));
+
+        // metrics
+        this.app.get("/metrics/:id", (req, res) => {
+            const { id } = req.params;
+            res.set("Content-Type", "text/plain");
+            return this.metrics.has(id) ? res.end(this.metrics.get(id)) : res.end();
+        });
+        this.app.get("/eyebeam/:id", (req, res) => {
+            const { id } = req.params;
+            if (!this.metrics.has(id)) {
+                this.client.subscribe(`metrics:${id}`, (channel: string, payload: any) => this.metrics.set(id, payload.raw));
+            }
+            return Eyebeam.handler({ url: "/metrics/" + id, interval: 3000 })(req, res);
+        });
     }
 
     async start(): Promise<void> {

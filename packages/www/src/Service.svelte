@@ -13,6 +13,12 @@
             alert(JSON.stringify(await response.json()));
         };
     }
+
+    function showMetrics(id) {
+        return () => {
+            alert(id);
+        };
+    }
 </script>
 
 <style>
@@ -59,6 +65,7 @@
                 <div class="div-table-col">Application Id</div>
                 <div class="div-table-col">Gateway</div>
                 <div class="div-table-col">Host</div>
+                <div class="div-table-col">Metrics</div>
             </div>
             {#each Object.entries(info.access) as [id, info], i}
                 <div class="div-table-row">
@@ -67,6 +74,7 @@
                     <div class="div-table-col">{info.applicationId}</div>
                     <div class="div-table-col">{info.gateway}</div>
                     <div class="div-table-col">{info.host}</div>
+                    <div class="div-table-col"><a href={`/eyebeam/`+id}>link</a></div>
                 </div>
             {/each}
         </div>

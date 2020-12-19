@@ -1,6 +1,6 @@
 import { AccessOptions } from "./access-options";
 import WebSocket, { Data } from "ws";
-import { ProtocolManager, Login, Logout, Register, Request, Response, Unregister, Ok, Logger, ILogger, Subscribe, Unsubscribe, Notify, MessageType, Fail, IMethodInfo } from "red-dwarf-common";
+import { ProtocolManager, Login, Logout, Register, Request, Response, Unregister, Ok, Logger, ILogger, Subscribe, Unsubscribe, Notify, MessageType, Fail, IMethodInfo, Setting, Metrics, getMetricsData } from "red-dwarf-common";
 import { IAccess } from "../interface";
 import { AccessSdkError } from "../error";
 
@@ -9,12 +9,17 @@ export class Access implements IAccess {
     @Logger
     private readonly logger!: ILogger;
 
+    @Setting("METRICS_INTERVAL", 3000)
+    private readonly interval!: number;
+
     private client: WebSocket | undefined;
     private protocol = new ProtocolManager();
 
     private readonly services: Map<string, any> = new Map();
     private readonly subscribers: Map<string, Set<Function>> = new Map();
     private readonly replies: Map<string, Function> = new Map();
+
+    private timerId!: NodeJS.Timeout;
 
     constructor(private readonly options: AccessOptions) { }
 
@@ -23,9 +28,19 @@ export class Access implements IAccess {
         this.logger.debug(`Client is connected to gateway 👍`);
         await this.login();
         this.logger.debug("Client is logged in 👌");
+        this.timerId = setInterval(
+            async () => {
+                const metrics = new Metrics()
+                metrics.raw = await getMetricsData();
+                const packet = this.protocol.encode(metrics);
+                this.client?.send(packet);
+            },
+            this.interval
+        );
     }
 
     async disconnect(): Promise<void> {
+        clearInterval( this.timerId);
         await this.logout();
         this.logger.debug("Client is logged out 🤚");
         await this.close();
