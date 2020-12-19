@@ -40,7 +40,7 @@ export class Access implements IAccess {
     }
 
     async disconnect(): Promise<void> {
-        clearInterval( this.timerId);
+        clearInterval(this.timerId);
         await this.logout();
         this.logger.debug("Client is logged out 🤚");
         await this.close();

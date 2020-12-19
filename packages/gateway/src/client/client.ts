@@ -140,8 +140,8 @@ export class Client implements IClient {
                         throw new GatewayClientError("Client is not logged in");
                     }
                     const n = new Notify();
-                    n.channel=`metrics:${this.id}`;
-                    n.payload= request;
+                    n.channel = `metrics:${this.id}`;
+                    n.payload = request;
                     this.broker.send(ChannelType.topic, n.channel, this.protocol.encode(n));
                     break;
 
