@@ -3,7 +3,7 @@ import { INetworkServer } from "../interface";
 import { Client, IAccess, ILogger, Logger, Setting } from "red-dwarf-sdk";
 import WebSocket, { Server as WSServer } from "ws";
 import { createServer, Server as HTTPServer } from "http";
-const Eyebeam = require("eyebeam");
+import Eyebeam from "eyebeam";
 
 
 export class HttpServer implements INetworkServer {

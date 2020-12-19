@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "eyebeam": "^0.1.0",
+    "eyebeam": "^0.1.1",
     "red-dwarf-sdk": "^0.0.1",
     "ws": "^7.4.1"
   },
