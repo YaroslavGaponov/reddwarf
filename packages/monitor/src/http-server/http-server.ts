@@ -3,7 +3,7 @@ import { INetworkServer } from "../interface";
 import { Client, IAccess, ILogger, Logger, Setting } from "red-dwarf-sdk";
 import WebSocket, { Server as WSServer } from "ws";
 import { createServer, Server as HTTPServer } from "http";
-import Eyebeam from "eyebeam";
+import { handler } from "eyebeam";
 
 
 export class HttpServer implements INetworkServer {
@@ -54,7 +54,7 @@ export class HttpServer implements INetworkServer {
             if (!this.metrics.has(id)) {
                 this.client.subscribe(`metrics:${id}`, (channel: string, payload: any) => this.metrics.set(id, payload.raw));
             }
-            return Eyebeam.handler({ url: "/metrics/" + id, interval: 3000 })(req, res);
+            return handler({ url: "/metrics/" + id, interval: 3000 })(req, res);
         });
     }
 
