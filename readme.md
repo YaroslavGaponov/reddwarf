@@ -23,7 +23,6 @@ microservice framework
     * [Wherefore](#wherefore-1)
   * [Upstream](#upstream)
     * [Wherefore](#wherefore-2)
-* [Welcome](#welcome)
 
 # Overview
 
@@ -152,8 +151,3 @@ make stop-redis
 
 
 [Dwarf-upstream](packages/upstream/readme.md)
-
-
-# Welcome
-
-Contributions Welcome!
